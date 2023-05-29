@@ -37,15 +37,15 @@ lapply(seq_along(dir("./data/sim_data")), function(i) {
                                      ce_terms = "x",
                                      re_indicator = "re",
                                      ce_indicator = "ce",
-                                     df_ce  = 2,
-                                     tvc_re = 2,
-                                     tvc_re_terms = list(x = 2),
-                                     tvc_ce_terms = list(x = 2),
+                                     df_ce  = 1:3,
+                                     tvc_re = 1:3,
+                                     tvc_re_terms = list(x = 1),
+                                     tvc_ce_terms = list(x = 1),
                                      cluster = "id"),
                  times = c(2.5, 5.0, 7.5),
                  n_cluster = 10,
                  n_bootstrapps = 200,
-                 size_bootstrapp = 500,
+                 size_bootstrapp = 1000,
                  ci_fit = TRUE)
   
   # Success

@@ -72,9 +72,20 @@ model_test <- function(data,
                                                               size_bootstrapp, 
                                                               replace = FALSE),]
     
-    # Fit parametric model
+    # Test dfs for best model fit
     arg_JointFPM$data <- tmp_data
     
+    dfs_test_results <- do.call(test_dfs_JointFPM, arg_JointFPM)
+    
+    best_fit <- dfs_test_results[which.min(dfs_test_results$bic), ]
+    
+    # Update model call based on best dfs fit
+    arg_JointFPM$df_ce <- best_fit$df_bh
+    arg_JointFPM$tvc_re <- best_fit$df_tvc_re
+    arg_JointFPM$tvc_ce_terms <- list(x = best_fit$df_tvc_x_ce)
+    arg_JointFPM$tvc_re_terms <- list(x = best_fit$df_tvc_x_re)
+    
+    # Fit model
     model_call <- safely(function() do.call(JointFPM, arg_JointFPM))
     model_test <- model_call()
     
@@ -140,6 +151,10 @@ model_test <- function(data,
     
     # Save data as .csv file
     fit$iteration <- i
+    fit$df_ce <- best_fit$df_bh
+    fit$df_re <- best_fit$df_tvc_re
+    fit$tvc_ce_terms <- best_fit$df_tvc_x_ce
+    fit$tvc_re_terms <- best_fit$df_tvc_x_re
     
     data.table::fwrite(fit,
                        paste0(path_sim_iterations, "iteration", i, ".csv"))
