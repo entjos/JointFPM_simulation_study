@@ -49,6 +49,7 @@ compute_bias <- function(sim_no){
                 by.y = c("t", "x"))
   
   comb <- comb[, .(bias     = mean(expn - fit),
+                   rel_bias = mean((expn - fit) / expn),
                    bias_se  = sqrt((1/(n_sim * (n_sim - 1))) * sum((expn - fit)^2)),
                    coverage = sum(expn >= lci & expn <= uci, na.rm = TRUE) / 
                      sum(!is.na(lci))),
@@ -67,13 +68,15 @@ bias_estimates <- lapply(1:9, compute_bias) |>
 # 2. Export table to Latex -----------------------------------------------------
 
 table_out <- bias_estimates[, .(scenario, x, stop, 
-                                bias     = round(bias, 3), 
-                                coverage = paste0("(", 
-                                                  format(round(coverage * 100, 1), 
+                                bias     = round(bias, 3),
+                                rel_bias = paste0(format(round(rel_bias * 100, 3), 
                                                          nsmall = 1), 
-                                                  "%)"))] |> 
+                                                  "%"),
+                            coverage = paste0(format(round(coverage * 100, 1), 
+                                                     nsmall = 1), 
+                                              "%"))] |> 
   dt$dcast(scenario + x ~ stop,
-           value.var = c("bias", "coverage"))
+           value.var = c("bias", "rel_bias", "coverage"))
 
 new_col_orde <-  c(1, 2, 
                    order(sub(".*_", "", colnames(table_out[, -(1:2)]))) + 2)
@@ -81,17 +84,20 @@ new_col_orde <-  c(1, 2,
 dt$setcolorder(table_out, new_col_orde)
 
 kx$kbl(table_out, 
-       col.names = c("Scenario", "x", rep(c("Bias", "Coverage"), 3)),
+       col.names = c("Scenario", "x", rep(c("Bias", "Rel. Bias", 
+                                            "Coverage"), 3)),
        booktabs = TRUE,
        linesep = c(rep("", 5), "\\rule{0pt}{4ex}"),
-       caption = paste("Estimates of bias and coverage at 2.5, 5, and 7.5",
+       caption = paste("Estimates of bias, relative bias, and coverage", 
+                       "at 2.5, 5, and 7.5",
                        "years of $\\mu(t)$"),
+       align = c("c", "c", rep("r", ncol(table_out) - 2)),
        format = "latex") |> 
   kx$column_spec(1, bold = TRUE) |>
   kx$add_header_above(c(" " = 2, 
-                        "At 2.5 Years" = 2, 
-                        "At 5 Years"   = 2, 
-                        "At 7.5 Years" = 2)) |> 
+                        "At 2.5 Years" = 3, 
+                        "At 5 Years"   = 3, 
+                        "At 7.5 Years" = 3)) |> 
   kx$collapse_rows(column = 1,
                    latex_hline = "none",
                    valign = "top",
@@ -99,3 +105,10 @@ kx$kbl(table_out,
   kx$kable_styling()|>
   kx$save_kable("./tables/simulation_restuls.tex")
 
+# 3. Save bias estimates -------------------------------------------------------
+
+save(bias_estimates,
+     file = "./data/sim_bias_estimates/bias_estimates.RData")
+
+#///////////////////////////////////////////////////////////////////////////////
+# END OF R-FILE

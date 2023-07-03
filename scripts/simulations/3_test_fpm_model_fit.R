@@ -22,7 +22,7 @@ box::use(usr = scripts/user_functions,
          dt  = data.table)
 
 # 1. Run Simulations -----------------------------------------------------------
-lapply(seq_along(dir("./data/sim_data")), function(i) {
+lapply(1:9, function(i) {
   
   # Load data
   sim_data <- dt$fread(paste0("./data/sim_data/sim", i, ".csv"))
@@ -31,20 +31,20 @@ lapply(seq_along(dir("./data/sim_data")), function(i) {
   usr$model_test(sim_data,
                  path_sim_iterations = paste0("./data/sim_iterations/sim", i, 
                                               "/"),
-                 arg_JointFPM = list(surv = "Surv(start, stop, 
-                                                  status, type = 'counting')",
-                                     re_terms = "x",
-                                     ce_terms = "x",
+                 arg_JointFPM = list(surv = Surv(start, stop, 
+                                                 status, type = 'counting') ~ 1,
+                                     re_model = ~ x,
+                                     ce_model = ~ x,
                                      re_indicator = "re",
                                      ce_indicator = "ce",
-                                     df_ce  = 1:3,
-                                     tvc_re = 1:3,
+                                     dfs_ce = 1:3,
+                                     dfs_re = 1:3,
                                      tvc_re_terms = list(x = 1),
                                      tvc_ce_terms = list(x = 1),
                                      cluster = "id"),
                  times = c(2.5, 5.0, 7.5),
                  n_cluster = 10,
-                 n_bootstrapps = 200,
+                 n_bootstrapps = 1900,
                  size_bootstrapp = 1000,
                  ci_fit = TRUE)
   

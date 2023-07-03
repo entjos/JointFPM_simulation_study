@@ -75,15 +75,38 @@ model_test <- function(data,
     # Test dfs for best model fit
     arg_JointFPM$data <- tmp_data
     
-    dfs_test_results <- do.call(test_dfs_JointFPM, arg_JointFPM)
+    test_dfs_call <- safely(function() do.call(test_dfs_JointFPM, arg_JointFPM))
+    test_dfs      <- test_dfs_call()
     
-    best_fit <- dfs_test_results[which.min(dfs_test_results$bic), ]
+    # Return with message on error
+    if(!is.null(test_dfs$error)){
+      
+      # Save error message
+      sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"))
+      
+      cat("Error in test_dfs_JointFPM() fit:\n")
+      print(test_dfs$error)
+      
+      sink()
+      
+      return(NULL)
+      
+    } else {
+      
+      dfs_test_results <- test_dfs$result
+      
+    }
+    
+    # Save best no dfs for best model fit
+    best_fit <- dfs_test_results[which.min(dfs_test_results$AIC), ]
     
     # Update model call based on best dfs fit
-    arg_JointFPM$df_ce <- best_fit$df_bh
-    arg_JointFPM$tvc_re <- best_fit$df_tvc_re
-    arg_JointFPM$tvc_ce_terms <- list(x = best_fit$df_tvc_x_ce)
-    arg_JointFPM$tvc_re_terms <- list(x = best_fit$df_tvc_x_re)
+    arg_JointFPM$df_ce <- best_fit$df_ce
+    arg_JointFPM$df_re <- best_fit$df_re
+    arg_JointFPM$tvc_ce_terms <- list(x = best_fit$df_ce_x)
+    arg_JointFPM$tvc_re_terms <- list(x = best_fit$df_re_x)
+    arg_JointFPM$dfs_ce <- NULL
+    arg_JointFPM$dfs_re <- NULL
     
     # Fit model
     model_call <- safely(function() do.call(JointFPM, arg_JointFPM))
@@ -114,11 +137,10 @@ model_test <- function(data,
       predict_call <- safely(
         function(){
           JointFPM:::predict.JointFPM(model,
-                                      newdata  = data.frame(x = j),
-                                      t        = times,
-                                      gauss_max_iter   = 5,
-                                      gauss_nodes      = 50,
-                                      ci_fit   = ci_fit)
+                                      newdata     = data.frame(x = j),
+                                      t           = times,
+                                      gauss_nodes = 100,
+                                      ci_fit      = ci_fit)
         })
       
       predict_test <- predict_call()
