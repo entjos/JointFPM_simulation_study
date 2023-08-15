@@ -47,9 +47,10 @@ gg_mean_no <- ggplot(expn,
   scale_colour_brewer(palette = "Set1") +
   facet_wrap(~ sex) +
   labs(x = "",
-       y = "Mean number \n of hospitalisations",
-       colour = "Received chemotherapy after surgery") +
-  theme_bw()
+       y = "Mean number\nof hospitalisations",
+       colour = "Received chemotherapy\nafter surgery") +
+  theme_bw() +
+  theme(plot.margin = unit(c(0, 0, 2, 0), "mm"))
 
 # 2. Create plot of difference E[N(t)] across time -----------------------------
 gg_diff <- ggplot(diff_expn,
@@ -65,22 +66,25 @@ gg_diff <- ggplot(diff_expn,
   scale_colour_brewer(palette = "Set1") +
   facet_wrap(~ sex) +
   labs(x = "Time since surgery (days)",
-       y = "Difference in mean number \n of hospitalisations") +
-  theme_bw()
+       y = "Difference in mean number\nof hospitalisations") +
+  theme_bw() +
+  theme(plot.margin = unit(c(0, 0, 0, 0), "mm"))
 
 # 3. Combine plots into one plot -----------------------------------------------
 gg_comb <- wrap_plots(gg_mean_no,
                       gg_diff,
                       ncol = 1, 
                       nrow = 2,
-                      guides = "collect") & theme(legend.position = 'bottom')
+                      guides = "collect") & 
+  theme(legend.position      = "right",
+        legend.justification = "top")
 
 # 4. Export graph as pdf -------------------------------------------------------
 ggsave("./plots/example_plot_1.pdf",
        gg_comb,
        device = "pdf",
        height = 14,
-       width = 14,
+       width = 18.66,
        units = "cm")
 
 # //////////////////////////////////////////////////////////////////////////////
