@@ -30,9 +30,10 @@ ce_data <- readmission |>
   group_by(id)         |>  
   slice_max(n = 1,
             order_by = t.stop) |>  
-  mutate(status = death,
-         ce     = 1,
-         re     = 0)
+  mutate(status   = death,
+         ce       = 1,
+         re       = 0,
+         t.start  = 0)
 
 # Create one dataset for recurrent event times
 re_data <- readmission |>  
@@ -81,7 +82,7 @@ model_fits <- test_dfs_JointFPM(surv = Surv(t.start, t.stop, status,
                                 data = comb_data)
 
 # Get the dfs for the best model fit
-model_fits[which.min(model_fits$aic), ]
+model_fits[which.min(model_fits$AIC), ]
 
 #   3.2 Fit model for E[N(t)] ==================================================
 
@@ -91,12 +92,12 @@ fit <- JointFPM(surv = Surv(t.start, t.stop, status, type = 'counting') ~ 1,
                 ce_model =  ~ female * chemo,
                 re_indicator = "re",
                 ce_indicator = "ce",
-                df_ce = 2,
-                df_re = 2,
-                tvc_re_terms = list(female = 2,
-                                    chemo  = 2),
-                tvc_ce_terms = list(female = 2,
+                df_ce = 3,
+                df_re = 3,
+                tvc_re_terms = list(female = 1,
                                     chemo  = 1),
+                tvc_ce_terms = list(female = 2,
+                                    chemo  = 2),
                 cluster = "id",
                 data = comb_data) 
 
