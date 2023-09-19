@@ -36,9 +36,9 @@ test <- lapply(1:9, function(i){
   dta <- dt$copy(estimates)
   
   dta[[i]][, scenario := paste0("Scenario~", i, "~iota~`=`~",
-                               scenarios$scale_comp[[i]],
-                               "~rho~`=`~",
-                               scenarios$scale_rec[[i]])]
+                                scenarios$scale_comp[[i]],
+                                "~rho~`=`~",
+                                scenarios$scale_rec[[i]])]
   dta[[i]][, x := factor(x)]
   dta[[i]][sample(.N, 10000)] # Take sampel of 10000 time points
   
@@ -47,17 +47,6 @@ test <- lapply(1:9, function(i){
 test <- dt$rbindlist(test)
 
 # 2. Create plot ---------------------------------------------------------------
-my_labeller <- as_labeller(c(`1` = '"rho"',
-                             `2` = '"rho"',
-                             `3` = '"rho"',
-                             `4` = '"rho"',
-                             `5` = '"rho"',
-                             `6` = '"rho"',
-                             `7` = '"rho"',
-                             `8` = '"rho"',
-                             `9` = '"rho"'),
-                           default = label_parsed)
-
 benchmark_plot <- ggplot(test,
                          aes(x = t,
                              y = expn,
@@ -65,7 +54,7 @@ benchmark_plot <- ggplot(test,
                              group  = x)) +
   geom_line()           +
   scale_colour_brewer(palette = "Set1") +
-  labs(x = "Time",
+  labs(x = "Time (Years since randomisation)",
        y = "Mean number of events")     +
   theme(strip.text = element_markdown()) +
   facet_wrap(~ scenario,
