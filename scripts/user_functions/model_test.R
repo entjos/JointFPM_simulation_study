@@ -139,7 +139,6 @@ model_test <- function(data,
           JointFPM:::predict.JointFPM(model,
                                       newdata     = data.frame(x = j),
                                       t           = times,
-                                      gauss_nodes = 100,
                                       ci_fit      = ci_fit)
         })
       
