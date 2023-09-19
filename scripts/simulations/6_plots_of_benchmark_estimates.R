@@ -51,6 +51,7 @@ benchmark_plot <- ggplot(test,
                          aes(x = t,
                              y = expn,
                              colour = x,
+                             lty    = x,
                              group  = x)) +
   geom_line()           +
   scale_colour_brewer(palette = "Set1") +
