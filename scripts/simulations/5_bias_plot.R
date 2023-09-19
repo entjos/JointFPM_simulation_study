@@ -48,7 +48,8 @@ res_plot1 <- ggplot(bias_estimates,
   scale_x_continuous(limits = c(-0.1, 0.1)) +
   geom_vline(xintercept = 0,
              lty = "dashed")                +
-  labs(x = "Absolute bias",
+  labs(title  = "(A)",
+       x      = "Absolute bias",
        colour = "Time since surgery (years)") +
   theme_bw()                                  +
   theme(axis.text.x = element_text(angle = 45, 
@@ -66,7 +67,8 @@ res_plot2 <- ggplot(bias_estimates,
                      labels = scales$percent) +
   geom_vline(xintercept = 0,
              lty = "dashed")                   +
-  labs(x      = "Relative bias (%)",
+  labs(title  = "(B)",
+       x      = "Relative bias (%)",
        colour = "Time since surgery (years)")  +
   theme_bw()                     + 
   theme(axis.text.x = element_text(angle = 45, 
@@ -84,7 +86,8 @@ res_plot3 <- ggplot(bias_estimates,
                      labels = scales$percent) +
   geom_vline(xintercept = 0.95,
              lty = "dashed") +
-  labs(x      = "Coverage (%)",
+  labs(title  = "(C)",
+       x      = "Coverage (%)",
        colour = "Time since surgery (years)")   +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust=1)) +

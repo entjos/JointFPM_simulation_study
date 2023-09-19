@@ -17,15 +17,15 @@ load("./data/example/expn_estimates.RData")
 
 # 1. Improve labeling for plotting ---------------------------------------------
 expn <- expn |> 
-  mutate(sex   = ifelse(female == 1, "Females", "Males"),
+  mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
          chemo = if_else(chemo == 1, "Yes", "No"))
 
 np_expn <- np_expn |> 
-  mutate(sex   = ifelse(female == 1, "Females", "Males"),
+  mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
          chemo = if_else(chemo == 1, "Yes", "No"))
 
 diff_expn <- diff_expn |> 
-  mutate(sex = ifelse(female == 1, "Females", "Males"))
+  mutate(sex = ifelse(female == 1, "(C) Females", "(D) Males"))
 
 # 2. Create plot of E[N(t)] across time ----------------------------------------
 gg_mean_no <- ggplot(expn,
