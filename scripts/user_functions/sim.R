@@ -39,7 +39,7 @@ sim <- function(n, par_rec, par_comp) {
                      dist.zc = "gamma",
                      par.zc = 0,
                      dist.rec = "weibull",
-                     par.rec = c(par_rec$scale, par_rec$shape),
+                     par.rec = c(par_rec$scale, par_rec$shape, par$scale_inc),
                      dist.comp = "weibull",
                      par.comp = c(par_comp$scale, par_comp$shape),
                      pfree = 1,
