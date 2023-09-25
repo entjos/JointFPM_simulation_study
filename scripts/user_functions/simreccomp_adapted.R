@@ -1,4 +1,12 @@
 #' simreccomp
+#' 
+#' This is an adapted version of the simreccomp function included in the `simrec`
+#' package developed by Frederico Marini. This adaped version of the `simreccomp`
+#' function implements changes in the intesity function of the recurrent
+#' event process as a function of the number of previous occurences for
+#' intensity functions that follow a Weibull distribution.
+#' 
+#' For the original function please check out https://github.com/federicomarini/simrec.
 #'
 #' This function allows simulation of time-to-event-data that follow a multistate-model
 #' with recurrent events of one type and a competing event. The baseline hazard for the
@@ -190,25 +198,29 @@
 #'
 #' simdata1
 #' simdata2
-simreccomp <- function(N,
-                       fu.min,
-                       fu.max,
-                       cens.prob = 0,
-                       dist.x = "binomial",
-                       par.x = 0,
-                       beta.xr = 0,
-                       beta.xc = 0,
-                       dist.zr = "gamma",
-                       par.zr = 0,
-                       a = NULL,
-                       dist.zc = NULL,
-                       par.zc = NULL,
-                       dist.rec,
-                       par.rec,
-                       dist.comp,
-                       par.comp,
-                       pfree = 0,
-                       dfree = 0) {
+simreccomp_adapted <- function(N,
+                               fu.min,
+                               fu.max,
+                               cens.prob = 0,
+                               dist.x = "binomial",
+                               par.x = 0,
+                               beta.xr = 0,
+                               beta.xc = 0,
+                               dist.zr = "gamma",
+                               par.zr = 0,
+                               a = NULL,
+                               dist.zc = NULL,
+                               par.zc = NULL,
+                               dist.rec,
+                               par.rec,
+                               dist.comp,
+                               par.comp,
+                               pfree = 0,
+                               dfree = 0) {
+  
+  # Load stats functions
+  box::use(stats[...])
+  
   if ((cens.prob > 0) & (fu.min != fu.max)) {
     warning(
       paste0(
@@ -336,11 +348,12 @@ simreccomp <- function(N,
       warning("lognormal together with covariates specified: this does not define the usual lognormal model! see help for details")
     }
   } else if (dist.rec == "weibull") { # weibull
-    if (length(par.rec) != 2) {
+    if (length(par.rec) != 3) {
       stop("par.rec has wrong dimension")
     }
-    lambda <- par.rec[1]
-    nu <- par.rec[2]
+    lambda <- par.rec[[1]]
+    nu <- par.rec[[2]]
+    lambda_inc <- par.rec[[3]]
   } else if (dist.rec == "gompertz") { # gompertz
     if (length(par.rec) != 2) {
       stop("par.rec has wrong dimension")
@@ -368,6 +381,7 @@ simreccomp <- function(N,
   }
   
   # initial step: simulation of N first event times
+  k <- 0 # initiate counter of occurrences
   U <- runif(N)
   Y <- (-1) * log(U) * exp((-1) * x %*% beta.xr) * 1 / zr
   if (dist.rec == "lognormal") { # lognormal
@@ -394,6 +408,7 @@ simreccomp <- function(N,
   
   # recursive step: simulation of N subsequent event times
   while (any(dirty)) {
+    k <- k + 1
     pd <- rbinom(N, 1, pfree)
     U <- runif(N)
     Y <- (-1) * log(U) * exp((-1) * x %*% beta.xr) * 1 / zr
@@ -401,7 +416,7 @@ simreccomp <- function(N,
     if (dist.rec == "lognormal") { # lognormal
       t <- (t1 + exp(qnorm(1 - exp(log(1 - pnorm((log(t1) - mu) / sigma)) - Y)) * sigma + mu) - (t1))
     } else if (dist.rec == "weibull") { # weibull
-      t <- (t1 + ((Y + lambda * (t1)^(nu)) / lambda)^(1 / nu) - (t1))
+      t <- (t1 + ((Y + (lambda * lambda_inc ^ k) * (t1)^(nu)) / (lambda * lambda_inc ^ k))^(1 / nu) - (t1))
     } else if (dist.rec == "gompertz") { # gompertz
       t <- (t1 + ((1 / alpha) * log((alpha / lambdag) * Y + exp(alpha * t1))) - (t1))
     } else if (dist.rec == "step") { # step
@@ -544,7 +559,6 @@ simreccomp <- function(N,
     pmin(tab.Fu, tab.comp.event),
     tab.comp.event
   )
-  
   
   for (i in 1:length(w)) {
     if (w[i]) {
