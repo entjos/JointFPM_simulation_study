@@ -1,12 +1,44 @@
+#' #############################################################################
+#' THIS IS A CHANGED VERSION OF THE FOLLOWING FILE
+#' SOURCE: https://github.com/federicomarini/simrec
+#' SOURCE AUTHOR: FREDERICO MARINI
+#' 
+#' CHANGED BY: JOSHUA PHILIPP ENTROP (JOSHUA.ENTROP@KI.SE)
+#' CHANGED LAST: 2023/11/02
+#' CHANGES MADE TO THE ORIGINAL SCRIPT:
+#'
+#' The original version of the `simreccomp` function included in the `simrec`
+#' packages allows to simulate recurrent event data from pre-defined
+#' intensity functions for a competing and recurrent event. In the original 
+#' version of the function, the intensity function of the recurrent event is 
+#' assumed to be constant with regards to the number of previous events. 
+#' This adapted verion of the `simrec` function allows to define the intensity 
+#' function of the recurrent event process as a function of the number of 
+#' previous events.
+#' 
+#' This function has been specifically adopted for this projects and is
+#' not intended to be used outside this project.
+#'
+#' Changes made in this function affect the simulation of recurrent event times
+#' from a Weibull distribution. The `par.rec` argument has been changed and
+#' takes now a vector of 3 elements as input:
+#'    - 1. element: Scale parameter of the requested Weibull distribution,
+#'    - 2. element: Shape parameter of the requested Weibull distribution,
+#'    - 3. element: A function of the number of previous events (`x`) defining
+#'                  how the shape parameter changes based on the number of
+#'                  previous events. NA if the shape parameter is constant
+#'                  across all event occurences.
+#'
+#' All code blocks that have been changed in the adapted version have been
+#' hilighted with the following statement:
+#' 
+#' #BEGIN OF CHANGES -----------------------------------------------------------
+#'  <CHANGED CODE>
+#' # END OF CHANGES ------------------------------------------------------------
+#'
+#' #############################################################################
+#'
 #' simreccomp
-#' 
-#' This is an adapted version of the simreccomp function included in the `simrec`
-#' package developed by Frederico Marini. This adaped version of the `simreccomp`
-#' function implements changes in the intesity function of the recurrent
-#' event process as a function of the number of previous occurences for
-#' intensity functions that follow a Weibull distribution.
-#' 
-#' For the original function please check out https://github.com/federicomarini/simrec.
 #'
 #' This function allows simulation of time-to-event-data that follow a multistate-model
 #' with recurrent events of one type and a competing event. The baseline hazard for the
@@ -198,6 +230,7 @@
 #'
 #' simdata1
 #' simdata2
+
 simreccomp_adapted <- function(N,
                                fu.min,
                                fu.max,
@@ -353,7 +386,7 @@ simreccomp_adapted <- function(N,
     }
     lambda <- par.rec[[1]]
     nu <- par.rec[[2]]
-    lambda_inc <- par.rec[[3]]
+    f_lambda_inc <- par.rec[[3]]
   } else if (dist.rec == "gompertz") { # gompertz
     if (length(par.rec) != 2) {
       stop("par.rec has wrong dimension")
@@ -381,7 +414,9 @@ simreccomp_adapted <- function(N,
   }
   
   # initial step: simulation of N first event times
+  # BEGIN OF CHANGES -----------------------------------------------------------  
   k <- 0 # initiate counter of occurrences
+  # END OF CHANGES -------------------------------------------------------------
   U <- runif(N)
   Y <- (-1) * log(U) * exp((-1) * x %*% beta.xr) * 1 / zr
   if (dist.rec == "lognormal") { # lognormal
@@ -408,7 +443,9 @@ simreccomp_adapted <- function(N,
   
   # recursive step: simulation of N subsequent event times
   while (any(dirty)) {
+    # BEGIN OF CHANGES ---------------------------------------------------------
     k <- k + 1
+    # END OF CHANGES -----------------------------------------------------------
     pd <- rbinom(N, 1, pfree)
     U <- runif(N)
     Y <- (-1) * log(U) * exp((-1) * x %*% beta.xr) * 1 / zr
@@ -416,7 +453,14 @@ simreccomp_adapted <- function(N,
     if (dist.rec == "lognormal") { # lognormal
       t <- (t1 + exp(qnorm(1 - exp(log(1 - pnorm((log(t1) - mu) / sigma)) - Y)) * sigma + mu) - (t1))
     } else if (dist.rec == "weibull") { # weibull
-      t <- (t1 + ((Y + (lambda * lambda_inc ^ k) * (t1)^(nu)) / (lambda * lambda_inc ^ k))^(1 / nu) - (t1))
+      # BEGIN OF CHANGES -------------------------------------------------------
+      if(is.function(f_lambda_inc)){
+        lambda_inc <- do.call(f_lambda_inc, list("x" = k))
+      } else {
+        lambda_inc <- 1
+      }
+      t <- (t1 + ((Y + (lambda * lambda_inc) * (t1)^(nu)) / (lambda * lambda_inc))^(1 / nu) - (t1))
+      # END OF CHANGES ---------------------------------------------------------
     } else if (dist.rec == "gompertz") { # gompertz
       t <- (t1 + ((1 / alpha) * log((alpha / lambdag) * Y + exp(alpha * t1))) - (t1))
     } else if (dist.rec == "step") { # step
@@ -435,6 +479,7 @@ simreccomp_adapted <- function(N,
     }
     T1 <- cbind(T1, ifelse(dirty, t1, NA))
     dirty <- ifelse(dirty, (t(t) < fu) & (t(t1) < fu), dirty)
+    if(any(is.na(dirty))) browser()
     if (!any(dirty)) break
     Tmat <- cbind(Tmat, ifelse(dirty, t, NA))
   }
@@ -575,4 +620,9 @@ simreccomp_adapted <- function(N,
   tab <- na.omit(tab)
   
   return(tab)
+}
+
+# Unit tests
+if (is.null(box::name())) {
+  box::use(./`__tests__`)
 }
