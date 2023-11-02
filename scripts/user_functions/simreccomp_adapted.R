@@ -2,9 +2,11 @@
 #' THIS IS A CHANGED VERSION OF THE FOLLOWING FILE
 #' SOURCE: https://github.com/federicomarini/simrec
 #' SOURCE AUTHOR: FREDERICO MARINI
+#' SOURCE LICENSE: GPL>=2
 #' 
 #' CHANGED BY: JOSHUA PHILIPP ENTROP (JOSHUA.ENTROP@KI.SE)
 #' CHANGED LAST: 2023/11/02
+#' LICENSE OF ADAPTED FFUNCTION GPL>=2
 #' CHANGES MADE TO THE ORIGINAL SCRIPT:
 #'
 #' The original version of the `simreccomp` function included in the `simrec`
@@ -32,7 +34,7 @@
 #' All code blocks that have been changed in the adapted version have been
 #' hilighted with the following statement:
 #' 
-#' #BEGIN OF CHANGES -----------------------------------------------------------
+#' # BEGIN OF CHANGES ----------------------------------------------------------
 #'  <CHANGED CODE>
 #' # END OF CHANGES ------------------------------------------------------------
 #'
