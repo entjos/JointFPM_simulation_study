@@ -1,6 +1,6 @@
 #' #############################################################################
 #' THIS IS A CHANGED VERSION OF THE FOLLOWING FILE
-#' SOURCE: https://github.com/federicomarini/simrec
+#' SOURCE: https://github.com/federicomarini/simrec/blob/devel/R/simreccomp.r
 #' SOURCE AUTHOR: FREDERICO MARINI
 #' SOURCE LICENSE: GPL>=2
 #' 
