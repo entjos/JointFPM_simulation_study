@@ -12,23 +12,38 @@
 # Prefix -----------------------------------------------------------------------
 
 # Load package
-box::use(par = parallel)
+box::use(dt  = data.table,
+         ft  = future,
+         future.apply[future_lapply])
 
 # 1. Define Scenarios ----------------------------------------------------------
 
-scenarios <- expand.grid(scale_rec   = c(0.1, 0.3, 0.5),
-                         shape_rec   = c(1.40),
-                         scale_comp  = c(0.02, 0.20, 0.60),
-                         shape_comp  = c(0.50))
+scenarios <- expand.grid(scale_rec     = list(0.1, 0.3, 0.5),
+                         shape_rec     = list(1.40),
+                         scale_rec_inc = list(NA),
+                         scale_comp  = list(0.02, 0.20, 0.60),
+                         shape_comp  = list(0.50)) |> 
+  as.list()
+
+# Add one scenario with a lambda being a function of previous occurences
+scenarios$scale_rec[[10]] <- 0.1
+scenarios$shape_rec[[10]] <- 1.4
+scenarios$scale_rec_inc[[10]] <- function(x){1 + (x/(x + 1))}
+scenarios$scale_comp[[10]] <- 0.2
+scenarios$shape_comp[[10]] <- 0.5
+
+# Save scenarios
+saveRDS(scenarios, file = "./data/sim_data/scenarios.RData")
 
 # 2. Set Up Parallelisation ----------------------------------------------------
 
-cl <- par$makeCluster(9, type = "SOCK")
-
-par$clusterExport(cl, c("scenarios"))
+ft$plan(strategy = "multisession",
+        workers  = 10)
 
 # 3. Run Simulations -----------------------------------------------------------
-par$clusterApply(cl, seq_len(nrow(scenarios)), function(i) {
+future_lapply(1:10, 
+              future.seed = 22345,
+              function(i) {
 
   # Load packages
   box::use(usr = scripts/user_functions,
@@ -36,10 +51,11 @@ par$clusterApply(cl, seq_len(nrow(scenarios)), function(i) {
 
   # Run Simulation (see function documentation for fixed parameters)
   temp <- usr$sim(1000000,
-                  par_rec  = list(scale = scenarios$scale_rec[[i]], 
-                                  shape = scenarios$shape_rec[[i]]),
-                  par_comp = list(scale = scenarios$scale_comp[[i]], 
-                                  shape = scenarios$shape_comp[[i]]))
+                  par_rec  = list(scale     = scenarios$scale_rec[[i]], 
+                                  shape     = scenarios$shape_rec[[i]],
+                                  scale_inc = scenarios$scale_rec_inc[[i]]),
+                  par_comp = list(scale     = scenarios$scale_comp[[i]], 
+                                  shape     = scenarios$shape_comp[[i]]))
 
   # Add indicator for scenario number
   temp$scenario <- i
@@ -51,10 +67,6 @@ par$clusterApply(cl, seq_len(nrow(scenarios)), function(i) {
   return(1)
 
 })
-
-# 4. Clean up ------------------------------------------------------------------
-
-par$stopCluster(cl)
 
 ################################################################################
 # END OF R-FILE
