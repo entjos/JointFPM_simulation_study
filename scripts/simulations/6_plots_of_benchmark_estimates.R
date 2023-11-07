@@ -19,16 +19,14 @@ box::use(ggplot2[...],
          dt = data.table)
 
 # load benchmark estimates
-estimates <- lapply(dir("./data/sim_benchmark", full.names = TRUE), 
-                    dt$fread)
+estimates <- lapply(1:9, function(x) {
+  dt$fread(paste0("./data/sim_benchmark/sim", x, ".csv"))
+})
 
 # 1. Preapre data for plotting -------------------------------------------------
 
 # Get parameters for scenarios
-scenarios <- expand.grid(scale_rec   = c(0.1, 0.3, 0.5),
-                         shape_rec   = c(1.40),
-                         scale_comp  = c(0.02, 0.20, 0.60),
-                         shape_comp  = c(0.50))
+scenarios <- readRDS("./data/sim_data/scenarios.RData")
 
 # Improve labeling of facets
 test <- lapply(1:9, function(i){
@@ -44,11 +42,11 @@ test <- lapply(1:9, function(i){
   
 })
 
-test <- dt$rbindlist(test)
+test <- test |> dt$rbindlist()
 
 # 2. Create plot ---------------------------------------------------------------
 benchmark_plot <- ggplot(test,
-                         aes(x = t,
+                         aes(x = time,
                              y = expn,
                              colour = x,
                              lty    = x,
@@ -59,7 +57,7 @@ benchmark_plot <- ggplot(test,
        y = "Mean number of events")     +
   theme(strip.text = element_markdown()) +
   facet_wrap(~ scenario,
-             scales = "free_y",
+             scales = "fixed",
              labeller = label_parsed) +
   theme_bw()
 
