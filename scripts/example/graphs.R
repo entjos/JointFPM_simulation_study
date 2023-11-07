@@ -48,7 +48,7 @@ gg_mean_no <- ggplot(expn,
   facet_wrap(~ sex) +
   labs(x = "",
        y = "Mean number\nof hospitalisations",
-       colour = "Received chemotherapy\nafter surgery") +
+       colour = "Received chemotherapy after surgery") +
   theme_bw() +
   theme(plot.margin = unit(c(0, 0, 2, 0), "mm"))
 
@@ -76,15 +76,14 @@ gg_comb <- wrap_plots(gg_mean_no,
                       ncol = 1, 
                       nrow = 2,
                       guides = "collect") & 
-  theme(legend.position      = "right",
-        legend.justification = "top")
+  theme(legend.position      = "bottom")
 
 # 4. Export graph as pdf -------------------------------------------------------
 ggsave("./plots/example_plot_1.pdf",
        gg_comb,
        device = "pdf",
        height = 14,
-       width = 18.66,
+       width = 14,
        units = "cm")
 
 # //////////////////////////////////////////////////////////////////////////////
