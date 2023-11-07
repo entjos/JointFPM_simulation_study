@@ -62,7 +62,7 @@ compute_bias <- function(sim_no){
 }
 
 # Apply function
-bias_estimates <- lapply(1:9, compute_bias) |> 
+bias_estimates <- lapply(1:10, compute_bias) |> 
   dt$rbindlist()
 
 # 2. Export table to Latex -----------------------------------------------------
