@@ -64,7 +64,20 @@ compute_bias <- function(sim_no){
 bias_estimates <- lapply(1:10, compute_bias) |> 
   dt$rbindlist()
 
-# 2. Export table to Latex -----------------------------------------------------
+# 2. Add significances ---------------------------------------------------------
+
+bias_estimates[,bias_lcb := bias - 1.96 * bias_se]
+bias_estimates[,bias_ucb := bias + 1.96 * bias_se]
+bias_estimates[,cov_lcb  := coverage - 1.96 * coverage_se]
+bias_estimates[,cov_ucb  := coverage + 1.96 * coverage_se]
+
+bias_estimates[, bias_sig := bias_lcb > 0    | bias_ucb < 0]
+bias_estimates[, cov_sig  := cov_lcb  > 0.95 | cov_ucb  < 0.95]
+
+sink("./tables/simulation_significances.txt")
+bias_estimates[, .(scenario, bias_sig, cov_sig)]
+sink()
+# 3. Export table to Latex -----------------------------------------------------
 
 table_out <- bias_estimates[, .(scenario, x, stop, 
                                 bias     = round(bias, 3),
@@ -104,7 +117,7 @@ kx$kbl(table_out,
   kx$kable_styling()|>
   kx$save_kable("./tables/simulation_restuls.tex")
 
-# 3. Save bias estimates -------------------------------------------------------
+# 4. Save bias estimates -------------------------------------------------------
 
 save(bias_estimates,
      file = "./data/sim_bias_estimates/bias_estimates.RData")
