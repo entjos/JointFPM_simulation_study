@@ -32,7 +32,7 @@ remove_x <- theme(axis.title.y  = element_blank(),
 
 # 2. Create labels for plotting ------------------------------------------------
 bias_estimates <- bias_estimates |> 
-  mutate(label = paste0("Scenario ", scenario,
+  mutate(label = paste0("Scenario ", sprintf("%02d", scenario),
                         "; x = ", x),
          stop = factor(stop))
 
@@ -43,11 +43,12 @@ res_plot1 <- ggplot(bias_estimates,
                     aes(x = bias,
                         y = label,
                         colour = stop,
-                        group  = stop))     +
-  geom_point()                              +
-  scale_x_continuous(limits = c(-0.1, 0.1)) +
+                        group  = stop))       +
+  geom_point()                                +
+  scale_x_continuous(limits = c(-0.10, 0.20)) +
+  scale_y_discrete(limits = rev)              +
   geom_vline(xintercept = 0,
-             lty = "dashed")                +
+             lty = "dashed")                  +
   labs(title  = "(A)",
        x      = "Absolute bias",
        colour = "Time since surgery (years)") +
@@ -61,10 +62,11 @@ res_plot2 <- ggplot(bias_estimates,
                     aes(x = rel_bias,
                         y = label,
                         colour = stop,
-                        group  = stop))       +
-  geom_point()                                +
+                        group  = stop))        +
+  geom_point()                                 +
   scale_x_continuous(limits = c(-0.1, 0.1),
-                     labels = scales$percent) +
+                     labels = scales$percent)  +
+  scale_y_discrete(limits = rev)               +
   geom_vline(xintercept = 0,
              lty = "dashed")                   +
   labs(title  = "(B)",
@@ -84,6 +86,7 @@ res_plot3 <- ggplot(bias_estimates,
   geom_point() +
   scale_x_continuous(limits = c(0.8, 1),
                      labels = scales$percent) +
+  scale_y_discrete(limits = rev)              +
   geom_vline(xintercept = 0.95,
              lty = "dashed") +
   labs(title  = "(C)",
