@@ -33,15 +33,14 @@ compute_bias <- function(sim_no){
   benchmark_x0 <- subset(benchmark, x == 0)
   benchmark_x1 <- subset(benchmark, x == 1)
   
+  benchmark <- rbind(benchmark_x0[c(which.min(abs(benchmark_x0$time - 2.5)),
+                                    which.min(abs(benchmark_x0$time - 5.0)),
+                                    which.min(abs(benchmark_x0$time - 10)))],
+                     benchmark_x1[c(which.min(abs(benchmark_x1$time - 2.5)),
+                                    which.min(abs(benchmark_x1$time - 5.0)),
+                                    which.min(abs(benchmark_x1$time - 10)))])
   
-  benchmark <- rbind(benchmark_x0[c(which.min(abs(benchmark_x0$t - 2.5)),
-                                    which.min(abs(benchmark_x0$t - 5.0)),
-                                    which.min(abs(benchmark_x0$t - 7.5)))],
-                     benchmark_x1[c(which.min(abs(benchmark_x1$t - 2.5)),
-                                    which.min(abs(benchmark_x1$t - 5.0)),
-                                    which.min(abs(benchmark_x1$t - 7.5)))])
-  
-  benchmark[, t := round(t, 1)]
+  benchmark[, t := round(time, 1)]
   
   comb <- merge(sim_results,
                 benchmark,
@@ -89,7 +88,7 @@ kx$kbl(table_out,
        booktabs = TRUE,
        linesep = c(rep("", 5), "\\rule{0pt}{4ex}"),
        caption = paste("Estimates of bias, relative bias, and coverage", 
-                       "at 2.5, 5, and 7.5",
+                       "at 2.5, 5, and 10",
                        "years of $\\mu(t)$"),
        align = c("c", "c", rep("r", ncol(table_out) - 2)),
        format = "latex") |> 
@@ -97,7 +96,7 @@ kx$kbl(table_out,
   kx$add_header_above(c(" " = 2, 
                         "At 2.5 Years" = 3, 
                         "At 5 Years"   = 3, 
-                        "At 7.5 Years" = 3)) |> 
+                        "At 10 Years"  = 3)) |> 
   kx$collapse_rows(column = 1,
                    latex_hline = "none",
                    valign = "top",
