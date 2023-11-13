@@ -74,26 +74,38 @@ bias_estimates[,cov_ucb  := coverage + 1.96 * coverage_se]
 bias_estimates[, bias_sig := bias_lcb > 0    | bias_ucb < 0]
 bias_estimates[, cov_sig  := cov_lcb  > 0.95 | cov_ucb  < 0.95]
 
-sink("./tables/simulation_significances.txt")
-bias_estimates[, .(scenario, bias_sig, cov_sig)]
-sink()
 # 3. Export table to Latex -----------------------------------------------------
 
-table_out <- bias_estimates[, .(scenario, x, stop, 
-                                bias     = round(bias, 3),
-                                rel_bias = paste0(format(round(rel_bias * 100, 3), 
-                                                         nsmall = 1), 
-                                                  "%"),
-                            coverage = paste0(format(round(coverage * 100, 1), 
-                                                     nsmall = 1), 
-                                              "%"))] |> 
-  dt$dcast(scenario + x ~ stop,
-           value.var = c("bias", "rel_bias", "coverage"))
+#   3.1 Improve printing of numbers and percentages ============================
+table_out <- dt$copy(bias_estimates)
+table_out[, bias := as.character(round(bias, 3))]
+table_out[, rel_bias := paste0(format(round(rel_bias * 100, 3), 
+                                      nsmall = 1), "\\%")]
+table_out[, coverage := paste0(format(round(coverage * 100, 1), 
+                                      nsmall = 1), "\\%")]
+
+#   3.2 Highlight significant bias and low coverage with bold ==================
+table_out$bias[table_out$bias_sig] <- 
+  kx$cell_spec(table_out$bias[table_out$bias_sig],
+               format = "latex",
+               bold = TRUE)
+
+table_out$coverage[table_out$cov_sig] <- 
+  kx$cell_spec(table_out$coverage[table_out$cov_sig],
+               format = "latex",
+               bold = TRUE)
+
+#   3.3 Prepare column order ===================================================
+table_out <- dt$dcast(table_out,
+                      scenario + x ~ stop,
+                      value.var = c("bias", "rel_bias", "coverage"))
 
 new_col_orde <-  c(1, 2, 
                    order(sub(".*_", "", colnames(table_out[, -(1:2)]))) + 2)
 
 dt$setcolorder(table_out, new_col_orde)
+
+#   3.4 Convert table to Latex =================================================
 
 kx$kbl(table_out, 
        col.names = c("Scenario", "x", rep(c("Bias", "Rel. Bias", 
@@ -104,7 +116,8 @@ kx$kbl(table_out,
                        "at 2.5, 5, and 10",
                        "years of $\\mu(t)$"),
        align = c("c", "c", rep("r", ncol(table_out) - 2)),
-       format = "latex") |> 
+       format = "latex",
+       escape = FALSE) |> 
   kx$column_spec(1, bold = TRUE) |>
   kx$add_header_above(c(" " = 2, 
                         "At 2.5 Years" = 3, 
@@ -113,7 +126,8 @@ kx$kbl(table_out,
   kx$collapse_rows(column = 1,
                    latex_hline = "none",
                    valign = "top",
-                   row_group_label_position = c("identity")) |> 
+                   row_group_label_position = c("identity"),
+                   row_group_label_fonts = list(list(escape = FALSE))) |> 
   kx$kable_styling()|>
   kx$save_kable("./tables/simulation_restuls.tex")
 
