@@ -34,7 +34,7 @@ sim <- function(n, par_rec, par_comp) {
                                  beta.xr = 1.2,
                                  beta.xc = 0.4,
                                  dist.zr = "gamma",
-                                 par.zr = 1,
+                                 par.zr = 0,
                                  dist.zc = "gamma",
                                  par.zc = 0,
                                  dist.rec = "weibull",
