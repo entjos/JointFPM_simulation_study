@@ -47,12 +47,17 @@ compute_bias <- function(sim_no){
                 by.x = c("stop", "x"),
                 by.y = c("t", "x"))
   
-  comb <- comb[, .(bias     = mean(expn - fit),
-                   rel_bias = mean((expn - fit) / expn),
-                   bias_se  = sqrt((1/(n_sim * (n_sim - 1))) * sum((expn - fit)^2)),
-                   coverage = sum(expn >= lci & expn <= uci, na.rm = TRUE) / 
-                     sum(!is.na(lci))),
+  comb <- comb[, `:=`(bias     = mean(fit - expn),
+                      rel_bias = mean((fit - expn) / expn),
+                      bias_se  = sqrt((1/(n_sim * (n_sim - 1))) * sum((expn - fit)^2)),
+                      coverage = sum(expn >= lci & expn <= uci, na.rm = TRUE) / 
+                        sum(!is.na(lci))),
                by = c("x", "stop")]
+  
+  comb[, rel_bias_se := sqrt((1 / (n_sim * (n_sim - 1))) * sum((((fit - expn) / expn) - rel_bias) ^ 2)),
+       by = c("x", "stop")]
+ 
+  comb <- comb[, .SD[1], by = c("x", "stop")]
   
   comb[, coverage_se := sqrt((coverage * (1 - coverage)) / n_sim)]
   comb[, scenario    := sim_no]
@@ -66,19 +71,22 @@ bias_estimates <- lapply(1:10, compute_bias) |>
 
 # 2. Add significances ---------------------------------------------------------
 
-bias_estimates[,bias_lcb := bias - 1.96 * bias_se]
-bias_estimates[,bias_ucb := bias + 1.96 * bias_se]
-bias_estimates[,cov_lcb  := coverage - 1.96 * coverage_se]
-bias_estimates[,cov_ucb  := coverage + 1.96 * coverage_se]
+bias_estimates[,bias_lcb     := bias     - 1.96 * bias_se]
+bias_estimates[,bias_ucb     := bias     + 1.96 * bias_se]
+bias_estimates[,rel_bias_lcb := rel_bias - 1.96 * rel_bias_se]
+bias_estimates[,rel_bias_ucb := rel_bias + 1.96 * rel_bias_se]
+bias_estimates[,cov_lcb      := coverage - 1.96 * coverage_se]
+bias_estimates[,cov_ucb      := coverage + 1.96 * coverage_se]
 
-bias_estimates[, bias_sig := bias_lcb > 0    | bias_ucb < 0]
-bias_estimates[, cov_sig  := cov_lcb  > 0.95 | cov_ucb  < 0.95]
+bias_estimates[, bias_sig     := bias_lcb > 0    | bias_ucb < 0]
+bias_estimates[, rel_bias_sig := rel_bias_lcb > 0| rel_bias_ucb < 0]
+bias_estimates[, cov_sig      := cov_lcb  > 0.95 | cov_ucb  < 0.95]
 
 # 3. Export table to Latex -----------------------------------------------------
 
 #   3.1 Improve printing of numbers and percentages ============================
 table_out <- dt$copy(bias_estimates)
-table_out[, bias := as.character(round(bias, 3))]
+table_out[, bias := as.character(format(round(bias, 3)), nsmall = 3)]
 table_out[, rel_bias := paste0(format(round(rel_bias * 100, 3), 
                                       nsmall = 1), "\\%")]
 table_out[, coverage := paste0(format(round(coverage * 100, 1), 
@@ -87,6 +95,11 @@ table_out[, coverage := paste0(format(round(coverage * 100, 1),
 #   3.2 Highlight significant bias and low coverage with bold ==================
 table_out$bias[table_out$bias_sig] <- 
   kx$cell_spec(table_out$bias[table_out$bias_sig],
+               format = "latex",
+               bold = TRUE)
+
+table_out$rel_bias[table_out$rel_bias_sig] <- 
+  kx$cell_spec(table_out$rel_bias[table_out$rel_bias_sig],
                format = "latex",
                bold = TRUE)
 
