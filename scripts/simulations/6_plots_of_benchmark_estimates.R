@@ -19,7 +19,7 @@ box::use(ggplot2[...],
          dt = data.table)
 
 # load benchmark estimates
-estimates <- lapply(1:9, function(x) {
+estimates <- lapply(1:10, function(x) {
   dt$fread(paste0("./data/sim_benchmark/sim", x, ".csv"))
 })
 
@@ -29,14 +29,16 @@ estimates <- lapply(1:9, function(x) {
 scenarios <- readRDS("./data/sim_data/scenarios.RData")
 
 # Improve labeling of facets
-test <- lapply(1:9, function(i){
+test <- lapply(1:10, function(i){
   
   dta <- dt$copy(estimates)
   
-  dta[[i]][, scenario := paste0("Scenario~", i, "~iota~`=`~",
-                                scenarios$scale_comp[[i]],
+  dta[[i]][, scenario := paste0("Scenario~", sprintf("%02d", i),
                                 "~rho~`=`~",
-                                scenarios$scale_rec[[i]])]
+                                scenarios$scale_rec[[i]],
+                                if(i == 10) "%up%",
+                                "~iota~`=`~",
+                                scenarios$scale_comp[[i]]),]
   dta[[i]][, x := factor(x)]
   dta[[i]][sample(.N, 10000)] # Take sampel of 10000 time points
   
@@ -55,17 +57,19 @@ benchmark_plot <- ggplot(test,
   scale_colour_brewer(palette = "Set1") +
   labs(x = "Time (Years since randomisation)",
        y = "Mean number of events")     +
+  
   theme(strip.text = element_markdown()) +
   facet_wrap(~ scenario,
              scales = "fixed",
-             labeller = label_parsed) +
+             labeller = label_parsed,
+             ncol = 3) +
   theme_bw()
 
 # 3. Export plot ---------------------------------------------------------------
 ggsave("./plots/benchmark_plot.pdf",
        benchmark_plot,
        device = cairo_pdf,
-       height = 14,
+       height = 18.6,
        width = 17,
        units = "cm")
 
