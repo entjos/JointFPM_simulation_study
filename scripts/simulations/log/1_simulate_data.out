@@ -1,0 +1,137 @@
+
+R version 4.1.2 (2021-11-01) -- "Bird Hippie"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
+[Previously saved workspace restored]
+
+> ################################################################################
+> # Project: Parametic Estimation of The Mean Number of Events
+> # 
+> # Title: Simulate Data for Scenario 1
+> # 
+> # Author: Joshua Entrop
+> #
+> # Creates: ./data/sim_data/sim<1-9>.csv
+> # 
+> ################################################################################
+> 
+> # Prefix -----------------------------------------------------------------------
+> 
+> # Load package
+> box::use(dt  = data.table,
++          ft  = future,
++          future.apply[future_lapply])
+> 
+> # 1. Define Scenarios ----------------------------------------------------------
+> 
+> scenarios <- expand.grid(scale_rec     = list(0.1, 0.3, 0.5),
++                          shape_rec     = list(1.40),
++                          scale_rec_inc = list(NA),
++                          scale_comp  = list(0.02, 0.20, 0.60),
++                          shape_comp  = list(0.50)) |> 
++   as.list()
+> 
+> # Add one scenario with a lambda being a function of previous occurences
+> scenarios$scale_rec[[10]] <- 0.1
+> scenarios$shape_rec[[10]] <- 1.4
+> scenarios$scale_rec_inc[[10]] <- function(x){1 + (x/(x + 1))}
+> scenarios$scale_comp[[10]] <- 0.2
+> scenarios$shape_comp[[10]] <- 0.5
+> 
+> # Save scenarios
+> saveRDS(scenarios, file = "./data/sim_data/scenarios.RData")
+> 
+> # 2. Set Up Parallelisation ----------------------------------------------------
+> 
+> ft$plan(strategy = "multisession",
++         workers  = 10)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+> 
+> # 3. Run Simulations -----------------------------------------------------------
+> future_lapply(1:10, 
++               future.seed = 22345,
++               function(i) {
++ 
++   # Load packages
++   box::use(usr = scripts/user_functions,
++            dt  = data.table)
++ 
++   # Run Simulation (see function documentation for fixed parameters)
++   temp <- usr$sim(1000000,
++                   par_rec  = list(scale     = scenarios$scale_rec[[i]], 
++                                   shape     = scenarios$shape_rec[[i]],
++                                   scale_inc = scenarios$scale_rec_inc[[i]]),
++                   par_comp = list(scale     = scenarios$scale_comp[[i]], 
++                                   shape     = scenarios$shape_comp[[i]]))
++ 
++   # Add indicator for scenario number
++   temp$scenario <- i
++   
++   # Export dataset
++   dt$fwrite(temp, paste0("./data/sim_data/sim", i, ".csv"))
++ 
++   # Success
++   return(1)
++ 
++ })
+[[1]]
+[1] 1
+
+[[2]]
+[1] 1
+
+[[3]]
+[1] 1
+
+[[4]]
+[1] 1
+
+[[5]]
+[1] 1
+
+[[6]]
+[1] 1
+
+[[7]]
+[1] 1
+
+[[8]]
+[1] 1
+
+[[9]]
+[1] 1
+
+[[10]]
+[1] 1
+
+> 
+> ################################################################################
+> # END OF R-FILE
+> 
+> proc.time()
+    user   system  elapsed 
+    8.85     0.95 27049.50 

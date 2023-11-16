@@ -1,0 +1,256 @@
+
+R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
+[Previously saved workspace restored]
+
+> ################################################################################
+> # Project: Parametic Estimation of The Mean Number of Events
+> # 
+> # Title: Example analysis of the readmission dataset
+> # 
+> # Author: Joshua Entrop
+> # 
+> ################################################################################
+> 
+> # Load packages
+> library(frailtypack)
+Loading required package: survival
+Loading required package: boot
+
+Attaching package: 'boot'
+
+The following object is masked from 'package:survival':
+
+    aml
+
+Loading required package: MASS
+Loading required package: survC1
+Loading required package: doBy
+
+Attaching package: 'frailtypack'
+
+The following object is masked from 'package:survival':
+
+    cluster
+
+Warning messages:
+1: package 'survC1' was built under R version 4.3.2 
+2: package 'doBy' was built under R version 4.3.2 
+> library(JointFPM)
+> library(rstpm2)
+Loading required package: splines
+
+Attaching package: 'rstpm2'
+
+The following object is masked from 'package:survival':
+
+    colon
+
+> library(rlang)
+> library(magrittr)
+
+Attaching package: 'magrittr'
+
+The following object is masked from 'package:rlang':
+
+    set_names
+
+> library(tidyr)
+
+Attaching package: 'tidyr'
+
+The following object is masked from 'package:magrittr':
+
+    extract
+
+> library(purrr)
+
+Attaching package: 'purrr'
+
+The following object is masked from 'package:magrittr':
+
+    set_names
+
+The following objects are masked from 'package:rlang':
+
+    %@%, flatten, flatten_chr, flatten_dbl, flatten_int, flatten_lgl,
+    flatten_raw, invoke, splice
+
+> library(ggplot2)
+Warning message:
+package 'ggplot2' was built under R version 4.3.2 
+> library(dplyr)
+
+Attaching package: 'dplyr'
+
+The following object is masked from 'package:doBy':
+
+    order_by
+
+The following object is masked from 'package:MASS':
+
+    select
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+> 
+> # Load readmission data included in {frailtypack}
+> data("readmission")
+> 
+> # 1. Load data -----------------------------------------------------------------
+> 
+> comb_data <- read.csv("./data/example/readmission_stacked.csv")
+> 
+> # 2. Fit joint model -----------------------------------------------------------
+> 
+> fit <- JointFPM(surv = Surv(t.start, t.stop, status, type = 'counting') ~ 1,
++                 re_model =  ~ female * chemo,
++                 ce_model =  ~ female * chemo,
++                 re_indicator = "re",
++                 ce_indicator = "ce",
++                 df_ce = 3,
++                 df_re = 3,
++                 tvc_re_terms = list(female = 1,
++                                     chemo  = 1),
++                 tvc_ce_terms = list(female = 2,
++                                     chemo  = 2),
++                 cluster = "id",
++                 data = comb_data) 
+> 
+> # 2. Post-estimations ----------------------------------------------------------
+> 
+> #   2.1 Predict survival =======================================================
+> newdata <- expand.grid(female = 0:1,
++                        chemo  = 0:1,
++                        ce     = 1,
++                        re     = 0)
+> 
+> surv_fit <- predict(fit$model,
++                     newdata = newdata,
++                     grid = TRUE,
++                     full = TRUE,
++                     type = "surv") |>
++   mutate(chemo  = as.character(chemo),
++          female = as.character(female))
+> 
+> #   2.2 Predict sumulative hazard ==============================================
+> cumhaz_fit <- predict(fit$model,
++                       newdata = mutate(newdata, re = 1, ce = 0),
++                       grid = TRUE,
++                       full = TRUE,
++                       type = "cumhaz") |>
++   mutate(chemo  = as.character(chemo),
++          female = as.character(female))
+> 
+> 
+> # 3. Non-parametric estimation -------------------------------------------------
+> 
+> #   3.1 Estimate KME ===========================================================
+> np_surv_fit <- survfit(Surv(t.stop, status) ~ chemo + female,
++                        data = subset(comb_data, ce == 1)) |>
++   summary()
+> 
+> np_surv_fit <- lapply(c(2:4, 6, 10), function(i) np_surv_fit[i])
+> np_surv_fit <- do.call(data.frame, np_surv_fit)
+> np_surv_fit <- np_surv_fit |> 
++   group_by(strata) |>
++   mutate(cumhaz = cumsum(n.event / n.risk)) |>
++   ungroup() |>
++   separate_wider_delim(strata, delim = ", ", names = c("chemo", "female")) |>  
++   mutate(chemo  = as.character(gsub("(.*)(\\d)", "\\2", chemo)),
++          female = as.character(gsub("(.*)(\\d)", "\\2", female)))
+> 
+> #   3.2 Estimate Aalen-Johanson Estimate =======================================
+> np_cumhaz_fit <- survfit(Surv(t.start, t.stop, status,
++                               type = "counting") ~ female + chemo,
++                          data = subset(comb_data, re == 1)) |>
++   summary()
+> 
+> np_cumhaz_fit <- lapply(c(2:4, 6, 10), function(i) np_cumhaz_fit[i])
+> np_cumhaz_fit <- do.call(data.frame, np_cumhaz_fit)
+> np_cumhaz_fit <- np_cumhaz_fit |> 
++   mutate(cumhaz = cumsum(n.event / n.risk),
++          .by = strata) |>
++   separate_wider_delim(strata, delim = ", ", names = c("female", "chemo")) |>  
++   mutate(chemo  = as.character(gsub("(.*)(\\d)", "\\2", chemo)),
++          female = as.character(gsub("(.*)(\\d)", "\\2", female)))
+> 
+> # 4. Plot surves ---------------------------------------------------------------
+> 
+> list("np_surv_fit"   = np_surv_fit, 
++      "surv_fit"      = surv_fit,
++      "np_cumhaz_fit" = np_cumhaz_fit,
++      "cumhaz_fit"    = cumhaz_fit) |>
++   map(~ mutate(.x,
++                female = if_else(female == 1, "Females", "Males"),
++                chemo  = if_else(chemo  == 1, "Treated", "Untreated"),
++                label  = paste(female, chemo))) %>% 
++         env_bind(.GlobalEnv, !!!.)
+> 
+> #   4.1 Plot survival cures ====================================================
+> ggplot(surv_fit,
++        aes(x = t.stop,
++            y = Estimate)) +
++   geom_line() +
++   geom_step(aes(x = time,
++                 y = surv),
++             data = np_surv_fit) +
++   facet_wrap(vars(label)) +
++   labs(x = "Time since surgery (days)",
++        y = "Survival probability") +
++   theme_bw()
+> 
+> ggsave("./plots/example_surv_kme.pdf",
++        device = "pdf",
++        height = 14,
++        width = 14,
++        units = "cm")
+> 
+> #   4.2 Plot cumhaz curves =====================================================
+> ggplot(cumhaz_fit,
++        aes(x = t.stop,
++            y = Estimate)) +
++   geom_line() +
++   geom_step(aes(x = time,
++                 y = cumhaz),
++             data = np_cumhaz_fit) +
++   facet_wrap(vars(label)) +
++   labs(x = "Time since surgery (days)",
++        y = "Cumulative hazard") +
++   theme_bw()
+> 
+> ggsave("./plots/example_cumhaz_na.pdf",
++        device = "pdf",
++        height = 14,
++        width = 14,
++        units = "cm")
+> 
+> # //////////////////////////////////////////////////////////////////////////////
+> # END OF R-SCRIPT
+> 
+> proc.time()
+   user  system elapsed 
+   9.70    1.67   24.51 

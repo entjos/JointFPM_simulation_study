@@ -3,8 +3,4 @@
 .Rproj.user
 /renv
 rtools40
-data
-plots
-tables
 scripts/experimental
-**/log

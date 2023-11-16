@@ -1,0 +1,62 @@
+    scenario bias_sig cov_sig
+ 1:        1    FALSE    TRUE
+ 2:        1    FALSE    TRUE
+ 3:        1    FALSE   FALSE
+ 4:        1    FALSE   FALSE
+ 5:        1     TRUE    TRUE
+ 6:        1    FALSE   FALSE
+ 7:        2    FALSE   FALSE
+ 8:        2    FALSE   FALSE
+ 9:        2    FALSE    TRUE
+10:        2    FALSE    TRUE
+11:        2    FALSE    TRUE
+12:        2    FALSE    TRUE
+13:        3    FALSE   FALSE
+14:        3    FALSE   FALSE
+15:        3    FALSE   FALSE
+16:        3    FALSE   FALSE
+17:        3    FALSE    TRUE
+18:        3     TRUE    TRUE
+19:        4    FALSE   FALSE
+20:        4    FALSE   FALSE
+21:        4    FALSE   FALSE
+22:        4    FALSE   FALSE
+23:        4     TRUE   FALSE
+24:        4    FALSE    TRUE
+25:        5     TRUE   FALSE
+26:        5    FALSE   FALSE
+27:        5    FALSE   FALSE
+28:        5    FALSE   FALSE
+29:        5     TRUE   FALSE
+30:        5    FALSE   FALSE
+31:        6    FALSE   FALSE
+32:        6    FALSE   FALSE
+33:        6    FALSE   FALSE
+34:        6    FALSE   FALSE
+35:        6    FALSE   FALSE
+36:        6    FALSE    TRUE
+37:        7    FALSE   FALSE
+38:        7    FALSE   FALSE
+39:        7    FALSE   FALSE
+40:        7    FALSE   FALSE
+41:        7    FALSE    TRUE
+42:        7     TRUE    TRUE
+43:        8    FALSE   FALSE
+44:        8    FALSE    TRUE
+45:        8     TRUE    TRUE
+46:        8    FALSE    TRUE
+47:        8     TRUE    TRUE
+48:        8    FALSE    TRUE
+49:        9    FALSE   FALSE
+50:        9    FALSE   FALSE
+51:        9    FALSE   FALSE
+52:        9    FALSE    TRUE
+53:        9    FALSE    TRUE
+54:        9     TRUE    TRUE
+55:       10     TRUE   FALSE
+56:       10     TRUE   FALSE
+57:       10     TRUE   FALSE
+58:       10     TRUE    TRUE
+59:       10    FALSE   FALSE
+60:       10     TRUE    TRUE
+    scenario bias_sig cov_sig

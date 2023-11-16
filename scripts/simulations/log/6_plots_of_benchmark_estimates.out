@@ -1,0 +1,103 @@
+
+R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
+[Previously saved workspace restored]
+
+> ################################################################################
+> # Project: Parametic Estimation of The Mean Number of Events
+> # 
+> # Title: Plotting estimates of bias and coverage
+> # 
+> # Author: Joshua Entrop
+> # 
+> ################################################################################
+> 
+> # Prefix -----------------------------------------------------------------------
+> 
+> # clear memory
+> rm(list = ls())
+> 
+> # Load packages
+> box::use(ggplot2[...],
++          scales,
++          ggtext[element_markdown],
++          dt = data.table)
+> 
+> # load benchmark estimates
+> estimates <- lapply(1:10, function(x) {
++   dt$fread(paste0("./data/sim_benchmark/sim", x, ".csv"))
++ })
+> 
+> # 1. Preapre data for plotting -------------------------------------------------
+> 
+> # Get parameters for scenarios
+> scenarios <- readRDS("./data/sim_data/scenarios.RData")
+> 
+> # Improve labeling of facets
+> test <- lapply(1:10, function(i){
++   
++   dta <- dt$copy(estimates)
++   
++   dta[[i]][, scenario := paste0("Scenario~", sprintf("%02d", i),
++                                 "~rho~`=`~",
++                                 scenarios$scale_rec[[i]],
++                                 if(i == 10) "%up%",
++                                 "~iota~`=`~",
++                                 scenarios$scale_comp[[i]]),]
++   dta[[i]][, x := factor(x)]
++   dta[[i]][sample(.N, 10000)] # Take sampel of 10000 time points
++   
++ })
+> 
+> test <- test |> dt$rbindlist()
+> 
+> # 2. Create plot ---------------------------------------------------------------
+> benchmark_plot <- ggplot(test,
++                          aes(x = time,
++                              y = expn,
++                              colour = x,
++                              lty    = x,
++                              group  = x)) +
++   geom_line()           +
++   scale_colour_brewer(palette = "Set1") +
++   labs(x = "Time (Years since randomisation)",
++        y = "Mean number of events")     +
++   
++   theme(strip.text = element_markdown()) +
++   facet_wrap(~ scenario,
++              scales = "fixed",
++              labeller = label_parsed,
++              ncol = 3) +
++   theme_bw()
+> 
+> # 3. Export plot ---------------------------------------------------------------
+> ggsave("./plots/benchmark_plot.pdf",
++        benchmark_plot,
++        device = cairo_pdf,
++        height = 18.6,
++        width = 17,
++        units = "cm")
+> 
+> #///////////////////////////////////////////////////////////////////////////////
+> # END OF R-FILE
+> 
+> proc.time()
+   user  system elapsed 
+  15.14   11.12   50.43 
