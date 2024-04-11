@@ -18,7 +18,15 @@ load("./data/example/expn_estimates.RData")
 # 1. Improve labeling for plotting ---------------------------------------------
 expn <- expn |> 
   mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
-         chemo = if_else(chemo == 1, "Yes", "No"))
+         chemo = if_else(chemo == 1, "Yes", "No"),
+         type  = "Conditional")
+
+expn_marg <- expn_marg |> 
+  mutate(sex = ifelse(female == 1, "(A) Females", "(B) Males"),
+         chemo = if_else(chemo == 1, "Yes", "No"),
+         type  = "Standardised")
+
+expn <- bind_rows(expn, expn_marg)
 
 np_expn <- np_expn |> 
   mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
@@ -31,24 +39,20 @@ diff_expn <- diff_expn |>
 gg_mean_no <- ggplot(expn,
                      aes(x = t.stop,
                          y = fit,
-                         colour = chemo,
-                         group  = chemo)) +
+                         linetype = type,
+                         colour = chemo)) +
   geom_line() +
   geom_step(aes(x = time,
                 y = expn,
                 colour = chemo,
-                group  = chemo),
+                linetype = "Conditional"),
             data = np_expn) +
-  geom_ribbon(aes(ymin = lci,
-                  ymax = uci),
-              data  = subset(expn, chemo == 1),
-              alpha = 0.1,
-              colour = NA) +
   scale_colour_brewer(palette = "Set1") +
   facet_wrap(~ sex) +
   labs(x = "",
        y = "Mean number\nof hospitalisations",
-       colour = "Received chemotherapy after surgery") +
+       colour = "Received chemo\nafter surgery",
+       linetype = "Estimate") +
   theme_bw() +
   theme(plot.margin = unit(c(0, 0, 2, 0), "mm"))
 
@@ -76,14 +80,15 @@ gg_comb <- wrap_plots(gg_mean_no,
                       ncol = 1, 
                       nrow = 2,
                       guides = "collect") & 
-  theme(legend.position      = "bottom")
+  theme(legend.position      = "right",
+        legend.box           = "vertical")
 
 # 4. Export graph as pdf -------------------------------------------------------
 ggsave("./plots/example_plot_1.pdf",
        gg_comb,
        device = "pdf",
        height = 14,
-       width = 14,
+       width = 18,
        units = "cm")
 
 # //////////////////////////////////////////////////////////////////////////////

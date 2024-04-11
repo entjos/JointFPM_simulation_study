@@ -5,12 +5,6 @@
 # 
 # Author: Joshua Entrop
 #
-# Model specification:
-#   - l_a = 3
-#   - l_b = 3
-#   - l_x_re = 2
-#   - l_x_ce = 2
-#
 # Creates: ./data/sim_iterations/sim<1-10>/iteration<n>.csv
 # 
 ################################################################################

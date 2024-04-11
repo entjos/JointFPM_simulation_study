@@ -47,6 +47,11 @@ comb_data <- bind_rows(ce_data, re_data) |>
          chemo        = if_else(chemo == "Treated", 1, 0),
          female_chemo = female * chemo)
 
+# Create varialbe charlston at diagnosis
+comb_data <- comb_data |> 
+  group_by(id)         |> 
+  mutate(cci_dx = first(charlson, order_by = enum))
+
 # Save prepared dataset
 write.csv(comb_data, "./data/example/readmission_stacked.csv")
 
@@ -157,9 +162,71 @@ diff_expn[[2]]$female <- 0
 # Combine results stored in a list into one data.frame
 diff_expn <- do.call(rbind, diff_expn)
 
-# 4. Export estimates ----------------------------------------------------------
+# 5. Get marginalised estimates ------------------------------------------------
 
-save(np_expn, expn, diff_expn, 
+comb_data <- dummy_cols(comb_data, c("cci_dx", "dukes")) |> 
+  rename_with(~ gsub("-", "_", .x))
+
+fit_fully_adjusted <- JointFPM(
+  surv = Surv(t.start, t.stop, status, type = 'counting') ~ 1,
+  re_model = ~ female * chemo + cci_dx_1_2 + cci_dx_3 + dukes_C + dukes_D,
+  ce_model = ~ female * chemo + cci_dx_1_2 + cci_dx_3 + dukes_C + dukes_D,
+  re_indicator = "re",
+  ce_indicator = "ce",
+  df_ce = 3,
+  df_re = 3,
+  tvc_re_terms = list(female = 1,
+                      chemo  = 1),
+  tvc_ce_terms = list(female = 2,
+                      chemo  = 2),
+  cluster = "id",
+  data = comb_data
+) 
+
+# Predict the mean number of events
+expn_marg <- lapply(seq_len(nrow(prediction_dataset)), function(i){
+  
+  fit <- predict(fit_fully_adjusted,
+                 type = "marg_mean_no",
+                 newdata = prediction_dataset[i, ],
+                 t =  seq(0, 1500, length.out = 100),
+                 ci_fit = FALSE)
+  
+  data.frame(prediction_dataset[i, ], fit)
+  
+})
+
+# Combine results stored in a list into one data.frame
+expn_marg <- do.call(rbind, expn_marg)
+
+# Estimate CIs for marginal difference at 1500 days
+sink("./tables/marg_diff.txt")
+cat("Estimated marginal difference in the mean number of rehospitalisations\n")
+cat("after colon cancer surgery comparing patients treated with and without\n")
+cat("chemo.\n")
+
+cat("\nEstimates for males\n")
+predict(fit_fully_adjusted,
+        type = "marg_diff",
+        newdata = data.frame(female       = 0,
+                             chemo        = 0),
+        t = 1500,
+        exposed = function(x) transform(x, chemo = 1),
+        ci_fit = TRUE)
+
+cat("\nEstimates for females\n")
+predict(fit_fully_adjusted,
+        type = "marg_diff",
+        newdata = data.frame(female       = 1,
+                             chemo        = 0),
+        t = 1500,
+        exposed = function(x) transform(x, chemo = 1),
+        ci_fit = TRUE)
+sink()
+
+# 6. Export estimates ----------------------------------------------------------
+
+save(np_expn, expn, diff_expn, expn_marg,
      file = "./data/example/expn_estimates.RData")
 
 # //////////////////////////////////////////////////////////////////////////////
