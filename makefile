@@ -15,10 +15,13 @@
 # 1. Prefix -------------------------------------------------------------------
 
 # Define R call
-SHELL = ./rtools40/usr/bin/sh.exe # Shell call when running on the server
-RCALL = "C:/PROGRA~1/R/R-41~1.2/bin/R.exe" --no-save CMD BATCH
-# RCALL = "C:\Users\josent\AppData\Local\Programs\R\R-4.3.1\bin\R.exe" --no-save CMD BATCH
+# SHELL = <PATH TO SEHLL> This only needs to be specified in case you are on 
+# system where you don't automatically have acess to the shell
+REXE  = R.exe # Please replace R.exe with the full path to your R installation
+              # if you don't have R on your system path
 
+
+RCALL = $(REXE) --no-save CMD BATCH
 # Define user functions directory
 USER_FUNCTIONS  = ./scripts/user_functions
 

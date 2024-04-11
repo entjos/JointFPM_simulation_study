@@ -5,20 +5,27 @@
 
 ## Reproducing the analysis
 
+System requirements:
+
+- R version 4.3.1
+- GNU make
+
 This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis.
 The `makefile` will re-create all tables and figures included in the manuscript. Running the make file requires you to
-install `GNU make` on your computer, if you haven't done so before. All packages and package versions required for the 
-analysis are defined in the `renv.lock` file. In order to reproduce the analysis please follow the steps listed below.
+install `GNU make` on your computer, if you haven't done so before. A Windows installation of `GNU make` can be found  [here](https://gnuwin32.sourceforge.net/packages/make.htm) or as part of `Rtools`. All packages and package versions 
+required for the analysis are defined in the `renv.lock` file. In order to reproduce the analysis please follow the steps 
+listed below.
 
    1. Open the `mean_no_events.Rproj` file. This will open a new RStudio session on your computer.
-   2. If necessary install the package `{renv}`.
-   3. Run the following command in your R console `renv::restore()`. This will open a prompt and ask you to install all the
+   2. Make sure that you are running R version 4.3.1
+   3. If necessary install the package `{renv}`.
+   4. Run the following command in your R console `renv::restore()`. This will open a prompt and ask you to install all the
       packages required to re-run the analysis. The function will automatically install the right package versions.
-   4. Open your shell or console in the project folder and run the following command `make all`. This will prompt make
+   5. Open your shell or console in the project folder and run the following command `make all`. This will prompt make
       to re-run the whole analysis. Please be aware that re-running the whole simulation study might take several days.
-      Running the makefile requires you to have R available on your path. Otherwise you can open the makefile using
-      your favorite texteditor and replace `R.exe` with the whole path to your `R.exe` file in the row starting with `RCALL`,
-      e.g. `RCALL = "C:/programmes/R/R-4.1.2/bin/R.exe" --no-save CMD BATCH`.
+      Running the makefile requires you to have R available on your system path. Otherwise you can open the makefile using
+      your favorite text editor and replace `R.exe` with the whole path to your `R.exe` file in the row starting with `REXE`,
+      e.g. `RCALL = "C:/programmes/R/R-4.3.1/bin/R.exe"`.
 
 Don't hesitate to write me an email if you should have troubles re-running the analysis for this project.
 
