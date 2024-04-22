@@ -443,25 +443,12 @@
       "Package": "frailtypack",
       "Version": "3.4.0",
       "Source": "GitHub",
-      "Repository": "CRAN",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "frailtypack",
       "RemoteUsername": "socale",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "fc55e2f58b8f0c972405ae3049e0a21f5d2074fb",
-      "Hash": "4f6bd00b8e9e5f34bfa5cd673ac331a5",
-      "Requirements": [
-        "MASS",
-        "boot",
-        "doBy",
-        "nlme",
-        "rootSolve",
-        "shiny",
-        "statmod",
-        "survC1",
-        "survival"
-      ]
+      "RemoteRepo": "frailtypack",
+      "RemoteRef": "master",
+      "RemoteSha": "fc55e2f58b8f0c972405ae3049e0a21f5d2074fb"
     },
     "fs": {
       "Package": "fs",
