@@ -9,7 +9,7 @@ System requirements:
 
 - R version 4.3.1
 - GNU make
-- Microsoft Windows 10 
+- Microsoft Windows 10 (requiered for parallisation)
 
 This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started. On my machine the whole program took around 3 days to finish. The results from the last simulation run are saved in the file `data/sim_bias_estimates/bias_estimates.RData`.
 
