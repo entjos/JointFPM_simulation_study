@@ -11,9 +11,9 @@ System requirements:
 - GNU make
 - Microsoft Windows 10 
 
-This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started. On my machine the whole program took around 3 days to finish.
+This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started. On my machine the whole program took around 3 days to finish. The results from the last simulation run are saved in the file `data/sim_bias_estimates/bias_estimates.RData`.
 
-The `makefile` will re-create all tables and figures included in the manuscript. Running the make file requires you to install `GNU make` on your computer, if you haven't done so before. A Windows installation of `GNU make` can be found  [here](https://gnuwin32.sourceforge.net/packages/make.htm) or as part of `Rtools`. All packages and package versions required for the analysis are defined in the `renv.lock` file. In order to reproduce the analysis please follow the steps listed below.
+The `makefile` will re-create all tables and figures included in the manuscript. Running the make file requires you to install `GNU make` on your computer, if you haven't done so before. A Windows installation of `GNU make` can be found [here](https://gnuwin32.sourceforge.net/packages/make.htm) or as part of `Rtools`. All packages and package versions required for the analysis are defined in the `renv.lock` file. In order to reproduce the analysis please follow the steps listed below.
 
    1. Open the `mean_no_events.Rproj` file. This will open a new RStudio session on your computer.
    2. Make sure that you are running R version 4.3.1
@@ -22,6 +22,10 @@ The `makefile` will re-create all tables and figures included in the manuscript.
    5. Open your shell or console in the project folder and run the following command `make all`. This will prompt make to re-run the whole analysis. Please be aware that re-running the whole simulation study might take several days. Running the makefile requires you to have R available on your system path. Otherwise you can open the makefile using your favorite text editor and replace `R.exe` with the whole path to your `R.exe` file in the row starting with `REXE`, e.g. `RCALL = "C:/programmes/R/R-4.3.1/bin/R.exe"`.
 
 Don't hesitate to write me an email if you should have troubles re-running the analysis for this project.
+
+## Data provenance
+
+The example dataset `data/exmaple/readmission.rds` used in the illustrative example was first published in the [`frailtypack`](https://cran.r-project.org/package=frailtypack) package for R under a GPL-2 licence.
 
 ## Folder structure
 
