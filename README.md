@@ -11,7 +11,7 @@ System requirements:
 - GNU make
 - Microsoft Windows 10 (required for parallelisation)
 
-This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started. On my machine the whole program took around 3 days to finish. All datasets created in the simulation study are available as a `.zip` folder at [OSF](https://osf.io/wt4m3)
+This project includes a `makefile` which can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started. On my machine the whole program took around 3 days to finish. All datasets created in the simulation study are available as a `.zip` folder at [OSF](https://osf.io/k24gc)
 
 The `makefile` will re-create all tables and figures included in the manuscript. Running the make file requires you to install `GNU make` on your computer, if you haven't done so before. A Windows installation of `GNU make` can be found [here](https://gnuwin32.sourceforge.net/packages/make.htm) or as part of `Rtools`. All packages and package versions required for the analysis are defined in the `renv.lock` file. In order to reproduce the analysis please follow the steps listed below.
 
