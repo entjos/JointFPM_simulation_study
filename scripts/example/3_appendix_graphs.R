@@ -123,7 +123,7 @@ ggplot(surv_fit,
        y = "Survival probability") +
   theme_bw()
 
-ggsave("./plots/example_surv_kme.pdf",
+ggsave("./plots/figureS1.pdf",
        device = "pdf",
        height = 14,
        width = 14,
@@ -142,7 +142,7 @@ ggplot(cumhaz_fit,
        y = "Cumulative hazard") +
   theme_bw()
 
-ggsave("./plots/example_cumhaz_na.pdf",
+ggsave("./plots/figureS2.pdf",
        device = "pdf",
        height = 14,
        width = 14,

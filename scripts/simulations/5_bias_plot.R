@@ -105,7 +105,7 @@ gg_comb <- ptw$wrap_plots(res_plot1, res_plot2, res_plot3,
 
 # 5. Export plot ---------------------------------------------------------------
 
-ggsave("./plots/biasplot_1.pdf",
+ggsave("./plots/figure3.pdf",
        gg_comb,
        device = "pdf",
        height = 14,

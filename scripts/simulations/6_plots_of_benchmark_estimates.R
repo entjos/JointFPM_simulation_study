@@ -66,7 +66,7 @@ benchmark_plot <- ggplot(test,
   theme_bw()
 
 # 3. Export plot ---------------------------------------------------------------
-ggsave("./plots/benchmark_plot.pdf",
+ggsave("./plots/figure2.pdf",
        benchmark_plot,
        device = cairo_pdf,
        height = 18.6,

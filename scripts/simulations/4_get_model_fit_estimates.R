@@ -143,7 +143,7 @@ kx$kbl(table_out,
                    row_group_label_position = c("identity"),
                    row_group_label_fonts = list(list(escape = FALSE))) |> 
   kx$kable_styling()|>
-  kx$save_kable("./tables/simulation_restuls.tex")
+  kx$save_kable("./tables/table3.tex")
 
 # 4. Create table of MC error limits -------------------------------------------
 

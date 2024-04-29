@@ -84,7 +84,7 @@ gg_comb <- wrap_plots(gg_mean_no,
         legend.box           = "vertical")
 
 # 4. Export graph as pdf -------------------------------------------------------
-ggsave("./plots/example_plot_1.pdf",
+ggsave("./plots/figure4.pdf",
        gg_comb,
        device = "pdf",
        height = 14,
