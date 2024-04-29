@@ -74,14 +74,19 @@ $(SIMULATIONS_OBJ)/6_plots_of_benchmark_estimates.out: $(SIMULATIONS_DIR)/6_plot
 EXAMPLE_DIR = ./scripts/example
 EXAMPLE_OBJ = ./scripts/example/log
 
-example: $(EXAMPLE_OBJ)/analysis.out \
-         $(EXAMPLE_OBJ)/graphs.out
+example: $(EXAMPLE_OBJ)/1_analysis.out \
+         $(EXAMPLE_OBJ)/2_graphs.out \
+         $(EXAMPLE_OBJ)/3_appendix_graphs.out \
 
-$(EXAMPLE_OBJ)/analysis.out: $(EXAMPLE_DIR)/analysis.R 
+$(EXAMPLE_OBJ)/1_analysis.out: $(EXAMPLE_DIR)/1_analysis.R 
 	$(RCALL) $< $@
 
-$(EXAMPLE_OBJ)/graphs.out: $(EXAMPLE_DIR)/graphs.R \
-	$(EXAMPLE_OBJ)/analysis.out 
+$(EXAMPLE_OBJ)/2_graphs.out: $(EXAMPLE_DIR)/2_graphs.R \
+	$(EXAMPLE_OBJ)/1_analysis.out 
+	$(RCALL) $< $@
+
+$(EXAMPLE_OBJ)/3_appendix_graphs.out: $(EXAMPLE_DIR)/3_appendix_graphs.R \
+	$(EXAMPLE_OBJ)/1_analysis.out 
 	$(RCALL) $< $@
 
 #//////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,6 @@
 ################################################################################
 
 # Load packages
-library(frailtypack)
 library(JointFPM)
 library(rstpm2)
 library(rlang)
@@ -19,7 +18,7 @@ library(ggplot2)
 library(dplyr)
 
 # Load readmission data included in {frailtypack}
-data("readmission")
+load("./data/example/readmission.rda")
 
 # 1. Load data -----------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 
-R version 4.1.2 (2021-11-01) -- "Bird Hippie"
-Copyright (C) 2021 The R Foundation for Statistical Computing
+R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -15,10 +15,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
-[Previously saved workspace restored]
-
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
+- The project is out-of-sync -- use `renv::status()` for details.
 > ################################################################################
 > # Project: Parametic Estimation of The Mean Number of Events
 > # 
@@ -60,16 +58,16 @@ i Using R 4.1.2 (lockfile was generated with R 4.3.1)
 > 
 > ft$plan(strategy = "multisession",
 +         workers  = 10)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
-i Using R 4.1.2 (lockfile was generated with R 4.3.1)
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
+- The project is out-of-sync -- use `renv::status()` for details.
 > 
 > # 3. Run Simulations -----------------------------------------------------------
 > future_lapply(1:10, 
@@ -134,4 +132,4 @@ i Using R 4.1.2 (lockfile was generated with R 4.3.1)
 > 
 > proc.time()
     user   system  elapsed 
-    8.85     0.95 27049.50 
+    7.98     1.93 46028.39 

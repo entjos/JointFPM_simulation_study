@@ -8,13 +8,14 @@
 ################################################################################
 
 # Load packages
-library(frailtypack)
 library(JointFPM)
 library(dplyr)
 library(tidyr)
+library(survival)
+library(fastDummies)
 
 # Load readmission data included in {frailtypack}
-data("readmission")
+load("./data/example/readmission.rda")
 
 # 1. Prepare data for analysis -------------------------------------------------
 

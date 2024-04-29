@@ -1,13 +1,11 @@
 
-R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -17,7 +15,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
+- The project is out-of-sync -- use `renv::status()` for details.
 [Previously saved workspace restored]
 
 > ################################################################################
@@ -30,31 +29,11 @@ Type 'q()' to quit R.
 > ################################################################################
 > 
 > # Load packages
-> library(frailtypack)
-Loading required package: survival
-Loading required package: boot
-
-Attaching package: 'boot'
-
-The following object is masked from 'package:survival':
-
-    aml
-
-Loading required package: MASS
-Loading required package: survC1
-Loading required package: doBy
-
-Attaching package: 'frailtypack'
-
-The following object is masked from 'package:survival':
-
-    cluster
-
-Warning messages:
-1: package 'survC1' was built under R version 4.3.2 
-2: package 'doBy' was built under R version 4.3.2 
 > library(JointFPM)
+Warning message:
+package 'JointFPM' was built under R version 4.3.3 
 > library(rstpm2)
+Loading required package: survival
 Loading required package: splines
 
 Attaching package: 'rstpm2'
@@ -72,6 +51,8 @@ The following object is masked from 'package:rlang':
 
     set_names
 
+Warning message:
+package 'magrittr' was built under R version 4.3.3 
 > library(tidyr)
 
 Attaching package: 'tidyr'
@@ -93,20 +74,12 @@ The following objects are masked from 'package:rlang':
     %@%, flatten, flatten_chr, flatten_dbl, flatten_int, flatten_lgl,
     flatten_raw, invoke, splice
 
-> library(ggplot2)
 Warning message:
-package 'ggplot2' was built under R version 4.3.2 
+package 'purrr' was built under R version 4.3.3 
+> library(ggplot2)
 > library(dplyr)
 
 Attaching package: 'dplyr'
-
-The following object is masked from 'package:doBy':
-
-    order_by
-
-The following object is masked from 'package:MASS':
-
-    select
 
 The following objects are masked from 'package:stats':
 
@@ -118,7 +91,7 @@ The following objects are masked from 'package:base':
 
 > 
 > # Load readmission data included in {frailtypack}
-> data("readmission")
+> load("./data/example/readmission.rda")
 > 
 > # 1. Load data -----------------------------------------------------------------
 > 
@@ -253,4 +226,4 @@ The following objects are masked from 'package:base':
 > 
 > proc.time()
    user  system elapsed 
-   9.70    1.67   24.51 
+  14.50    2.65   20.17 

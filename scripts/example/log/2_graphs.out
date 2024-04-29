@@ -1,13 +1,11 @@
 
-R version 4.3.1 (2023-06-16 ucrt) -- "Beagle Scouts"
+R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -17,7 +15,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-* Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 0.16.0]
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
+- The project is out-of-sync -- use `renv::status()` for details.
 [Previously saved workspace restored]
 
 > ################################################################################
@@ -43,8 +42,6 @@ The following objects are masked from 'package:base':
     intersect, setdiff, setequal, union
 
 > library(ggplot2)
-Warning message:
-package 'ggplot2' was built under R version 4.3.2 
 > library(patchwork)
 > 
 > # Load estimates of E[N(t)] into memory
@@ -53,7 +50,15 @@ package 'ggplot2' was built under R version 4.3.2
 > # 1. Improve labeling for plotting ---------------------------------------------
 > expn <- expn |> 
 +   mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
-+          chemo = if_else(chemo == 1, "Yes", "No"))
++          chemo = if_else(chemo == 1, "Yes", "No"),
++          type  = "Conditional")
+> 
+> expn_marg <- expn_marg |> 
++   mutate(sex = ifelse(female == 1, "(A) Females", "(B) Males"),
++          chemo = if_else(chemo == 1, "Yes", "No"),
++          type  = "Standardised")
+> 
+> expn <- bind_rows(expn, expn_marg)
 > 
 > np_expn <- np_expn |> 
 +   mutate(sex   = ifelse(female == 1, "(A) Females", "(B) Males"),
@@ -66,24 +71,20 @@ package 'ggplot2' was built under R version 4.3.2
 > gg_mean_no <- ggplot(expn,
 +                      aes(x = t.stop,
 +                          y = fit,
-+                          colour = chemo,
-+                          group  = chemo)) +
++                          linetype = type,
++                          colour = chemo)) +
 +   geom_line() +
 +   geom_step(aes(x = time,
 +                 y = expn,
 +                 colour = chemo,
-+                 group  = chemo),
++                 linetype = "Conditional"),
 +             data = np_expn) +
-+   geom_ribbon(aes(ymin = lci,
-+                   ymax = uci),
-+               data  = subset(expn, chemo == 1),
-+               alpha = 0.1,
-+               colour = NA) +
 +   scale_colour_brewer(palette = "Set1") +
 +   facet_wrap(~ sex) +
 +   labs(x = "",
 +        y = "Mean number\nof hospitalisations",
-+        colour = "Received chemotherapy after surgery") +
++        colour = "Received chemo\nafter surgery",
++        linetype = "Estimate") +
 +   theme_bw() +
 +   theme(plot.margin = unit(c(0, 0, 2, 0), "mm"))
 > 
@@ -111,17 +112,18 @@ package 'ggplot2' was built under R version 4.3.2
 +                       ncol = 1, 
 +                       nrow = 2,
 +                       guides = "collect") & 
-+   theme(legend.position      = "bottom")
++   theme(legend.position      = "right",
++         legend.box           = "vertical")
 > 
 > # 4. Export graph as pdf -------------------------------------------------------
 > ggsave("./plots/example_plot_1.pdf",
 +        gg_comb,
 +        device = "pdf",
 +        height = 14,
-+        width = 14,
++        width = 18,
 +        units = "cm")
 Warning messages:
-1: Removed 2 rows containing missing values (`geom_line()`). 
+1: Removed 4 rows containing missing values (`geom_line()`). 
 2: Removed 1 row containing missing values (`geom_line()`). 
 > 
 > # //////////////////////////////////////////////////////////////////////////////
@@ -129,4 +131,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-   7.79    1.15   30.42 
+  13.87    2.60   30.21 

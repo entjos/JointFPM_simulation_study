@@ -156,7 +156,7 @@ bias_estimates[, limit_coverage := 1.96 * coverage_se]
 bias_estimates[, (temp_var_selection) := lapply(.SD, function(x) round(x, 4)),
                .SDcols = temp_var_selection]
 
-tab_error_range <- dt$dcast(test,
+tab_error_range <- dt$dcast(bias_estimates,
                             scenario + x ~ stop,
                             value.var = temp_var_selection)
 
