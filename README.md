@@ -82,5 +82,6 @@ The example dataset `data/exmaple/readmission.rds` used in the illustrative exam
 +--- mean_no_events.Rproj                        R-project file
 +--- README.txt                                  Readme file
 +--- renv.lock                                   Renv lock file specifying the packages and package version 
-                                                 used in this project
+|                                                used in this project
++--- deps.R                                      List of additional packages not recognised by renv
 ```                                                 
