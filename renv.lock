@@ -25,14 +25,8 @@
     },
     "DBI": {
       "Package": "DBI",
-      "Version": "1.2.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods"
-      ],
-      "Hash": "164809cd72e1d5160b4cb3aa57f510fe"
+      "Version": "1.2.3",
+      "Source": "Repository"
     },
     "Deriv": {
       "Package": "Deriv",
@@ -1350,20 +1344,8 @@
     },
     "openxlsx2": {
       "Package": "openxlsx2",
-      "Version": "1.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "Rcpp",
-        "grDevices",
-        "magrittr",
-        "stringi",
-        "utils",
-        "zip"
-      ],
-      "Hash": "9fa7cdc5fbdb1c8511fdde72a944db63"
+      "Version": "1.8",
+      "Source": "Repository"
     },
     "pander": {
       "Package": "pander",
@@ -1810,26 +1792,8 @@
     },
     "sf": {
       "Package": "sf",
-      "Version": "1.0-15",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "DBI",
-        "R",
-        "Rcpp",
-        "classInt",
-        "grDevices",
-        "graphics",
-        "grid",
-        "magrittr",
-        "methods",
-        "s2",
-        "stats",
-        "tools",
-        "units",
-        "utils"
-      ],
-      "Hash": "f432b3379fb1a47046e253468b6b6b6d"
+      "Version": "1.0-16",
+      "Source": "Repository"
     },
     "shiny": {
       "Package": "shiny",
