@@ -24,7 +24,8 @@ stack_simreccomp <- function(data){
                 re     = 1)]
   
   # Get dataset for competing events
-  temp_ce <- data.table::as.data.table(data.table::copy(data))[stop == fu]
+  temp_ce <- data.table::as.data.table(data.table::copy(data))
+  temp_ce <- temp_ce[, .SD[which.max(stop)], id]
   temp_ce[,
           `:=` (start  = 0,
                 status = data.table::fifelse(status == 2, 1, 0),

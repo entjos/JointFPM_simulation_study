@@ -1,11 +1,11 @@
 ################################################################################
 # Project: Parametic Estimation of The Mean Number of Events
 # 
-# Title: Obtaining Benchmark Estimates for Scenario 1
+# Title: Estimate E[N(t|x=0)] - E[N(t|x=1)] in all scenarios
 # 
 # Author: Joshua Entrop
 #
-# Creates: ./data/sim_iterations/sim<1-10>/iteration<n>.csv
+# Creates: ./data/sim_iterations/diff/sim<1-10>/iteration<n>.csv
 # 
 ################################################################################
 
@@ -23,8 +23,9 @@ lapply(1:10, function(i) {
   
   # Obtain benchmark estimates
   usr$model_test(sim_data,
-                 path_sim_iterations = paste0("./data/sim_iterations/sim", i, 
-                                              "/"),
+                 type = "diff",
+                 path_sim_iterations = paste0("./data/sim_iterations",
+                                              "/diff/sim", i, "/"),
                  arg_JointFPM = list(surv = Surv(start, stop, 
                                                  status, type = 'counting') ~ 1,
                                      re_model = ~ x,

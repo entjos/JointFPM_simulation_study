@@ -1,11 +1,11 @@
 ################################################################################
-# Project: Parametic Estimation of The Mean Number of Events
+# Project: Parametric Estimation of The Mean Number of Events
 # 
-# Title: Obtaining Benchmark Estimates for Scenario 1
+# Title: Obtaining Benchmark Estimates for Scenarios 1-10
 # 
 # Author: Joshua Entrop
 #
-# Creates: ./data/sim_benchmark/sim1.csv
+# Creates: ./data/sim_benchmark/sim<1-10>.csv
 # 
 ################################################################################
 

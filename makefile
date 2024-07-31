@@ -15,9 +15,10 @@
 # 1. Prefix -------------------------------------------------------------------
 
 # Define R call
-# SHELL = <PATH TO SEHLL> This only needs to be specified in case you are on 
+SHELL = ./rtools40/usr/bin/sh.exe
+#This only needs to be specified in case you are on 
 # system where you don't automatically have acess to the shell
-REXE  = R.exe # Please replace R.exe with the full path to your R installation
+REXE  = "C:\Program Files\R\R-4.3.2\bin\R.exe" # Please replace R.exe with the full path to your R installation
               # if you don't have R on your system path
 
 
@@ -34,12 +35,14 @@ all: sim example
 SIMULATIONS_DIR = ./scripts/simulations
 SIMULATIONS_OBJ = ./scripts/simulations/log
  
-sim: $(SIMULATIONS_OBJ)/1_simulate_data.out \
-	 $(SIMULATIONS_OBJ)/2_get_benchmark.out \
-	 $(SIMULATIONS_OBJ)/3_test_fpm_model_fit.out \
-         $(SIMULATIONS_OBJ)/4_get_model_fit_estimates.out \
-	 $(SIMULATIONS_OBJ)/5_bias_plot.out \
-         $(SIMULATIONS_OBJ)/6_plots_of_benchmark_estimates.out
+sim: sim_iterations \
+     $(SIMULATIONS_OBJ)/4_get_model_fit_estimates.out \
+	   $(SIMULATIONS_OBJ)/5_bias_plot.out \
+     $(SIMULATIONS_OBJ)/6_plots_of_benchmark_estimates.out
+     
+sim_iterations: $(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out\
+                $(SIMULATIONS_OBJ)/3_2_test_fpm_model_fit_diff.out \
+                $(SIMULATIONS_OBJ)/3_3_test_fpm_model_fit_cumhaz.out
 
 $(SIMULATIONS_OBJ)/1_simulate_data.out: $(SIMULATIONS_DIR)/1_simulate_data.R \
                                         $(USER_FUNCTIONS)/sim.R
@@ -50,14 +53,26 @@ $(SIMULATIONS_OBJ)/2_get_benchmark.out: $(SIMULATIONS_DIR)/2_get_benchmark.R \
                                         $(USER_FUNCTIONS)/benchmarking.R
 	$(RCALL) $< $@
 
-$(SIMULATIONS_OBJ)/3_test_fpm_model_fit.out: $(SIMULATIONS_DIR)/3_test_fpm_model_fit.R \
+$(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out: $(SIMULATIONS_DIR)/3_1_test_fpm_model_fit_mean_no.R \
                                              $(SIMULATIONS_OBJ)/1_simulate_data.out \
                                              $(SIMULATIONS_OBJ)/2_get_benchmark.out \
                                              $(USER_FUNCTIONS)/model_test.R
 	$(RCALL) $< $@
 
+$(SIMULATIONS_OBJ)/3_2_test_fpm_model_fit_diff.out: $(SIMULATIONS_DIR)/3_2_test_fpm_model_fit_diff.R \
+                                             $(SIMULATIONS_OBJ)/1_simulate_data.out \
+                                             $(SIMULATIONS_OBJ)/2_get_benchmark.out \
+                                             $(USER_FUNCTIONS)/model_test.R
+	$(RCALL) $< $@
+	
+$(SIMULATIONS_OBJ)/3_3_test_fpm_model_fit_cumhaz.out: $(SIMULATIONS_DIR)/3_3_test_fpm_model_fit_cumhaz.R \
+                                                      $(SIMULATIONS_OBJ)/1_simulate_data.out \
+                                                      $(SIMULATIONS_OBJ)/2_get_benchmark.out \
+                                                      $(USER_FUNCTIONS)/model_test.R
+	$(RCALL) $< $@
+
 $(SIMULATIONS_OBJ)/4_get_model_fit_estimates.out: $(SIMULATIONS_DIR)/4_get_model_fit_estimates.R \
-                                                  $(SIMULATIONS_OBJ)/3_test_fpm_model_fit.out
+                                                  $(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out
 	$(RCALL) $< $@
 
 $(SIMULATIONS_OBJ)/5_bias_plot.out: $(SIMULATIONS_DIR)/5_bias_plot.R \

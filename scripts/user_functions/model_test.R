@@ -32,6 +32,7 @@
 #' @export
 
 model_test <- function(data,
+                       type = c("mean_no", "diff"),
                        path_sim_iterations,
                        arg_JointFPM,
                        n_cluster,
@@ -131,44 +132,91 @@ model_test <- function(data,
       
     }
     
-    # Predict mean no. for treated and untreated
-    fit <- lapply(0:1, function(j){
+    if(type == "mean_no"){
       
-      predict_call <- safely(
-        function(){
-          JointFPM:::predict.JointFPM(model,
-                                      newdata     = data.frame(x = j),
-                                      t           = times,
-                                      ci_fit      = ci_fit)
-        })
+      # Predict mean no. for treated and untreated
+      fit <- lapply(0:1, function(j){
+        
+        predict_call <- safely(
+          function(){
+            JointFPM:::predict.JointFPM(model,
+                                        type        = "mean_no",
+                                        newdata     = data.frame(x = j),
+                                        t           = times,
+                                        ci_fit      = ci_fit)
+          })
+        
+        predict_test <- predict_call()
+        
+        # Return with message on error
+        if(!is.null(predict_test$error)){
+          
+          # Save error message
+          sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
+               append = TRUE)
+          
+          cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
+          print(predict_test$error)
+          
+          sink()
+          
+          return(NULL)
+          
+        } else {
+          
+          tmp <- predict_test$result
+          
+        }
+        
+        tmp$x <- j
+        
+        return(tmp)
+        
+      }) |> data.table::rbindlist()
       
-      predict_test <- predict_call()
-     
-      # Return with message on error
-      if(!is.null(predict_test$error)){
-        
-        # Save error message
-        sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
-             append = TRUE)
-        
-        cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
-        print(predict_test$error)
-        
-        sink()
-        
-        return(NULL)
-        
-      } else {
-        
-        tmp <- predict_test$result
-        
-      }
+    } else if (type == "diff"){
       
-      tmp$x <- j
+      # Predict mean no. for treated and untreated
+      fit <- lapply(0:1, function(j){
+        
+        predict_call <- safely(
+          function(){
+            JointFPM:::predict.JointFPM(model,
+                                        type        = "diff",
+                                        newdata     = data.frame(x = 0),
+                                        exposed     = \(x) transform(x, x = 1),
+                                        t           = times,
+                                        ci_fit      = ci_fit)
+          })
+        
+        predict_test <- predict_call()
+        
+        # Return with message on error
+        if(!is.null(predict_test$error)){
+          
+          # Save error message
+          sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
+               append = TRUE)
+          
+          cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
+          print(predict_test$error)
+          
+          sink()
+          
+          return(NULL)
+          
+        } else {
+          
+          tmp <- predict_test$result
+          
+        }
+        
+        return(tmp)
+        
+      }) |> data.table::rbindlist()
       
-      return(tmp)
-      
-    }) |> data.table::rbindlist()
+    }
+    
     
     # Save data as .csv file
     fit$iteration <- i

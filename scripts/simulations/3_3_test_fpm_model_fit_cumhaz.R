@@ -1,0 +1,51 @@
+################################################################################
+# Project: Parametic Estimation of The Mean Number of Events
+# 
+# Title: Estimate E[N(t)] in all scenarios
+# 
+# Author: Joshua Entrop
+#
+# Creates: ./data/sim_iterations/mean_no/sim<1-10>/iteration<n>.csv
+# 
+################################################################################
+
+# Prefix -----------------------------------------------------------------------
+
+# Load packages
+
+
+# 1. Run Simulations -----------------------------------------------------------
+lapply(1:10, function(i) {
+  
+  box::use(usr = scripts/user_functions,
+           surv = survival[Surv, frailty],
+           rstpm2[...],
+           dt  = data.table)
+  
+  # Load data (drop death times)
+  sim_data <- dt$fread(paste0("./data/sim_data/sim", i, ".csv"))[re == 1]
+  
+  # Obtain benchmark estimates
+  usr$test_cum_haz_model(sim_data,
+                         path_sim_iterations = paste0("./data/sim_iterations",
+                                                      "/cum_haz/sim", i, "/"),
+                         arg_stpm2 = list(
+                           formula = Surv(start, stop, 
+                                          status, type = 'counting') ~ x,
+                           dfs_bh = 1:3,
+                           dfs_tvc = list(x = 1)
+                         ),
+                         cluster_var = "id",
+                         times = c(2.5, 5.0, 10),
+                         n_cluster = 10,
+                         n_bootstrapps = 10,
+                         size_bootstrapp = 1000,
+                         ci_fit = TRUE)
+  
+  # Success
+  return(1)
+  
+})
+
+################################################################################
+# END OF R-FILE
