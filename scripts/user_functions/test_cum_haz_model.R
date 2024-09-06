@@ -67,7 +67,7 @@ test_cum_haz_model <- function(data,
     box::use(rstpm2[...],
              survival[...],
              data.table[...],
-             purrr[safely],
+             purrr[safely, quietly],
              entjosR[...])
     
     # Sample from whole dataset
@@ -106,9 +106,7 @@ test_cum_haz_model <- function(data,
     # Update model call based on best dfs fit
     best_fit_specification <- list(formula =  arg_stpm2$formula, 
                                    data    = tmp_data, 
-                                   df      = best_fit$df_bh, 
-                                   tvc     = list(x = best_fit$dfs_tvc_x), 
-                                   cluster = tmp_data[[cluster_var]])
+                                   df      = best_fit$df_bh)
     
     # Fit model with best fitting dfs
     model_call <- safely(function() do.call(stpm2, best_fit_specification))
@@ -136,7 +134,7 @@ test_cum_haz_model <- function(data,
     # Predict mean no. for treated and untreated
     fit <- lapply(0:1, function(j){
       
-      predict_call <- safely(
+      predict_call <- quietly(
         function(){
           
           est <- predict(model,
@@ -149,14 +147,14 @@ test_cum_haz_model <- function(data,
       predict_test <- predict_call()
       
       # Return with message on error
-      if(!is.null(predict_test$error)){
+      if(!identical(predict_test$warnings, character(0))){
         
         # Save error message
         sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
              append = TRUE)
         
-        cat("Error in predict.stpm2() in subet x = ", j, ":\n")
-        print(predict_test$error)
+        cat("Warning in predict.stpm2() in subet x = ", j, ":\n")
+        print(predict_test$warnings)
         
         sink()
         
@@ -182,15 +180,17 @@ test_cum_haz_model <- function(data,
       
     }) |> rbindlist()
     
-    # Save data as .csv file
-    fit$iteration <- i
-    fit$df        <- best_fit$df_bh
-    fit$tvc_x     <- best_fit$dfs_tvc_x
-    
-    fwrite(fit,
-           paste0(path_sim_iterations, "iteration", i, ".csv"))
-    
-    cat("saved iteration", i)
+    if(nrow(fit) == 6){
+      # Save data as .csv file only if no warning was issued by predict.stpm2()
+      
+      fit$iteration <- i
+      fit$df        <- best_fit$df_bh
+      
+      fwrite(fit,
+             paste0(path_sim_iterations, "iteration", i, ".csv"))
+      
+      cat("saved iteration", i)
+    }
     
   })
   
