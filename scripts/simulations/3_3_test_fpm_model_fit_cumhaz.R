@@ -1,18 +1,15 @@
 ################################################################################
 # Project: Parametic Estimation of The Mean Number of Events
 # 
-# Title: Estimate E[N(t)] in all scenarios
+# Title: Estimate Lambda(t) in all scenarios
 # 
 # Author: Joshua Entrop
 #
-# Creates: ./data/sim_iterations/mean_no/sim<1-10>/iteration<n>.csv
+# Creates: ./data/sim_iterations/cum_haz/sim<1-10>/iteration<n>.csv
 # 
 ################################################################################
 
 # Prefix -----------------------------------------------------------------------
-
-# Load packages
-
 
 # 1. Run Simulations -----------------------------------------------------------
 lapply(1:10, function(i) {
@@ -32,13 +29,12 @@ lapply(1:10, function(i) {
                          arg_stpm2 = list(
                            formula = Surv(start, stop, 
                                           status, type = 'counting') ~ x,
-                           dfs_bh = 1:3,
-                           dfs_tvc = list(x = 1)
+                           dfs_bh = 1:3
                          ),
                          cluster_var = "id",
                          times = c(2.5, 5.0, 10),
                          n_cluster = 10,
-                         n_bootstrapps = 10,
+                         n_bootstrapps = 1900,
                          size_bootstrapp = 1000,
                          ci_fit = TRUE)
   
