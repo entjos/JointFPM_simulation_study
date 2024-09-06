@@ -43,25 +43,21 @@ test_cum_haz_model <- function(data,
                                ci_fit){
   
   # Load packages
-  box::use(par = parallel)
+  box::use(ft = future,
+           future.apply[future_lapply])
   
   # Obtain list of unique observations
   unique_ids <- unique(data[[cluster_var]])
   
   # Set up clusters
-  cl <- par$makeCluster(n_cluster, type = "SOCK")
-  
-  par$clusterExport(cl, c("data", "unique_ids", "path_sim_iterations",
-                          "size_bootstrapp", "arg_stpm2", "ci_fit",
-                          "times", "cluster_var"),
-                    envir = environment())
+  ft$plan(strategy = "multisession",
+          workers  = 10)
   
   # Run model tests on cluster
   
-  par$clusterApply(cl, 1:n_bootstrapps, function(i){
-    
-    # Change seed for each iteration
-    set.seed(i * 2)
+  future_lapply(1:n_bootstrapps, 
+                future.seed = 97235,
+                function(i){
     
     # Load packages
     box::use(rstpm2[...],
@@ -193,8 +189,5 @@ test_cum_haz_model <- function(data,
     }
     
   })
-  
-  # Close clusters
-  par$stopCluster(cl)
   
 }
