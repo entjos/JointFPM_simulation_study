@@ -14,149 +14,98 @@ rm(list = ls())
 
 # Load packages
 box::use(dt = data.table,
-         kx = kableExtra)
+         par = parallel,
+         kx = kableExtra,
+         usr = scripts/user_functions)
 
-# 1. Define function for calculating bias and coverage -------------------------
+# 1. Set Up Parallelisation ----------------------------------------------------
 
-compute_bias <- function(sim_no){
+cl <- par$makeCluster(10, type = "SOCK")
 
-  sim_results <- lapply(dir(paste0("./data/sim_iterations/sim", sim_no), 
-                            full.names = TRUE,
-                            pattern = ".csv$"), 
-                        dt$fread) |> 
-    dt$rbindlist()
-  
-  n_sim <- length(unique(sim_results$iteration))
-  
-  benchmark <- dt$fread(paste0("./data/sim_benchmark/sim", sim_no, ".csv"))
-  
-  benchmark_x0 <- subset(benchmark, x == 0)
-  benchmark_x1 <- subset(benchmark, x == 1)
-  
-  benchmark <- rbind(benchmark_x0[c(which.min(abs(benchmark_x0$time - 2.5)),
-                                    which.min(abs(benchmark_x0$time - 5.0)),
-                                    which.min(abs(benchmark_x0$time - 10)))],
-                     benchmark_x1[c(which.min(abs(benchmark_x1$time - 2.5)),
-                                    which.min(abs(benchmark_x1$time - 5.0)),
-                                    which.min(abs(benchmark_x1$time - 10)))])
-  
-  benchmark[, t := round(time, 1)]
-  
-  comb <- merge(sim_results,
-                benchmark,
-                by.x = c("stop", "x"),
-                by.y = c("t", "x"))
-  
-  comb <- comb[, `:=`(bias     = mean(fit - expn),
-                      rel_bias = mean((fit - expn) / expn),
-                      bias_se  = sqrt((1/(n_sim * (n_sim - 1))) * sum((expn - fit)^2)),
-                      coverage = sum(expn >= lci & expn <= uci, na.rm = TRUE) / 
-                        sum(!is.na(lci))),
-               by = c("x", "stop")]
-  
-  comb[, rel_bias_se := sqrt((1 / (n_sim * (n_sim - 1))) * sum((((fit - expn) / expn) - rel_bias) ^ 2)),
-       by = c("x", "stop")]
-  
-  comb <- comb[, .SD[1], by = c("x", "stop")]
-  
-  comb[, coverage_se := sqrt((coverage * (1 - coverage)) / n_sim)]
-  comb[, scenario    := sim_no]
-  
-  return(comb)
-}
+# 2. Define function for calculating bias and coverage -------------------------
 
 # Apply function
-bias_estimates <- lapply(1:10, compute_bias) |> 
+bias_estimates_mean_no <- par$parLapply(cl, 1:10, \(i) {
+  box::use(usr = scripts/user_functions)
+  usr$compute_bias(i, 
+                   estimate = "mean_no",
+                   target   = "mean_no",
+                   by_vars  = c("stop", "x"))
+}) |> 
   dt$rbindlist()
 
-# 2. Add significances ---------------------------------------------------------
+bias_estimates_diff <- par$parLapply(cl, 1:10, \(i) {
+  box::use(usr = scripts/user_functions)
+  usr$compute_bias(i, 
+                   estimate = "diff",
+                   target   = "diff", 
+                   by_vars  = c("stop"))
+}) |> 
+  dt$rbindlist()
 
-bias_estimates[,bias_lcb     := bias     - 1.96 * bias_se]
-bias_estimates[,bias_ucb     := bias     + 1.96 * bias_se]
-bias_estimates[,rel_bias_lcb := rel_bias - 1.96 * rel_bias_se]
-bias_estimates[,rel_bias_ucb := rel_bias + 1.96 * rel_bias_se]
-bias_estimates[,cov_lcb      := coverage - 1.96 * coverage_se]
-bias_estimates[,cov_ucb      := coverage + 1.96 * coverage_se]
+bias_estimates_cum_haz <- par$parLapply(cl, 1:10, \(i) {
+  box::use(usr = scripts/user_functions)
+  usr$compute_bias(i, 
+                   estimate = "cum_haz",
+                   target   = "mean_no",
+                   by_vars  = c("stop", "x"))
+}) |> 
+  dt$rbindlist()
 
-bias_estimates[, bias_sig     := bias_lcb > 0    | bias_ucb < 0]
-bias_estimates[, rel_bias_sig := rel_bias_lcb > 0| rel_bias_ucb < 0]
-bias_estimates[, cov_sig      := cov_lcb  > 0.95 | cov_ucb  < 0.95]
+bias_estimates_ghosh_lin <- par$parLapply(cl, 1:10, \(i) {
+  box::use(usr = scripts/user_functions)
+  usr$compute_bias(i, 
+                   estimate = "ghosh_lin",
+                   target   = "mean_no",
+                   by_vars  = c("stop", "x"))
+}) |> 
+  dt$rbindlist()
+
+bias_estimates_cont_x <- usr$compute_bias(11, 
+                                          estimate = "mean_no",
+                                          target   = "mean_no", 
+                                          by_vars  = c("stop", "x.V1", "x.V2"))
+
+# Close clusters
+par$stopCluster(cl)
 
 # 3. Export table to Latex -----------------------------------------------------
 
-#   3.1 Improve printing of numbers and percentages ============================
-table_out <- dt$copy(bias_estimates)
-table_out[, bias := as.character(format(round(bias, 3)), nsmall = 3)]
-table_out[, rel_bias := paste0(format(round(rel_bias * 100, 3), 
-                                      nsmall = 1), "\\%")]
-table_out[, coverage := paste0(format(round(coverage * 100, 1), 
-                                      nsmall = 1), "\\%")]
+usr$create_sim_table(bias_estimates_mean_no,
+                     by_vars = c("scenario", "x"),
+                     table_path = "./tables/table3.tex")
 
-#   3.2 Highlight significant bias and low coverage with bold ==================
-table_out$bias[table_out$bias_sig] <- 
-  kx$cell_spec(table_out$bias[table_out$bias_sig],
-               format = "latex",
-               bold = TRUE)
+usr$create_sim_table(bias_estimates_cont_x,
+                     by_vars = c("x.V2", "x.V1"),
+                     table_path = "./tables/tableS1.tex")
 
-table_out$rel_bias[table_out$rel_bias_sig] <- 
-  kx$cell_spec(table_out$rel_bias[table_out$rel_bias_sig],
-               format = "latex",
-               bold = TRUE)
+usr$create_sim_table(bias_estimates_diff,
+                     by_vars = "scenario",
+                     table_path = "./tables/tableS2.tex")
 
-table_out$coverage[table_out$cov_sig] <- 
-  kx$cell_spec(table_out$coverage[table_out$cov_sig],
-               format = "latex",
-               bold = TRUE)
+usr$create_sim_table(bias_estimates_ghosh_lin,
+                     by_vars = c("scenario", "x"),
+                     table_path = "./tables/tableS3.tex")
 
-#   3.3 Prepare column order ===================================================
-table_out <- dt$dcast(table_out,
-                      scenario + x ~ stop,
-                      value.var = c("bias", "rel_bias", "coverage"))
-
-new_col_orde <-  c(
-  1, 2, order(as.numeric(sub(".*_", "", colnames(table_out[, -(1:2)])))) + 2
-)
-
-dt$setcolorder(table_out, new_col_orde)
-
-#   3.4 Convert table to Latex =================================================
-
-kx$kbl(table_out, 
-       col.names = c("Scenario", "x", rep(c("Bias", "Rel. Bias", 
-                                            "Coverage"), 3)),
-       booktabs = TRUE,
-       linesep = c(rep("", 5), "\\rule{0pt}{4ex}"),
-       caption = paste("Estimates of bias, relative bias, and coverage", 
-                       "at 2.5, 5, and 10",
-                       "years of $\\mu(t)$"),
-       align = c("c", "c", rep("r", ncol(table_out) - 2)),
-       format = "latex",
-       escape = FALSE) |> 
-  kx$column_spec(1, bold = TRUE) |>
-  kx$add_header_above(c(" " = 2, 
-                        "At 2.5 Years" = 3, 
-                        "At 5 Years"   = 3, 
-                        "At 10 Years"  = 3)) |> 
-  kx$collapse_rows(column = 1,
-                   latex_hline = "none",
-                   valign = "top",
-                   row_group_label_position = c("identity"),
-                   row_group_label_fonts = list(list(escape = FALSE))) |> 
-  kx$kable_styling()|>
-  kx$save_kable("./tables/table3.tex")
+usr$create_sim_table(bias_estimates_cum_haz,
+                     by_vars = c("scenario", "x"),
+                     table_path = "./tables/tableS4.tex",
+                     highlight = FALSE,
+                     measures = c("bias", "rel_bias"),
+                     labels   = c("Bias", "Rel. Bias"))
 
 # 4. Create table of MC error limits -------------------------------------------
 
 temp_var_selection <- c("limit_bias", "limit_rel_bias", "limit_coverage")
 
-bias_estimates[, limit_bias     := 1.96 * bias_se]
-bias_estimates[, limit_rel_bias := 1.96 * rel_bias_se]
-bias_estimates[, limit_coverage := 1.96 * coverage_se]
+bias_estimates_mean_no[, limit_bias     := 1.96 * bias_se]
+bias_estimates_mean_no[, limit_rel_bias := 1.96 * rel_bias_se]
+bias_estimates_mean_no[, limit_coverage := 1.96 * coverage_se]
 
-bias_estimates[, (temp_var_selection) := lapply(.SD, function(x) round(x, 4)),
+bias_estimates_mean_no[, (temp_var_selection) := lapply(.SD, function(x) round(x, 4)),
                .SDcols = temp_var_selection]
 
-tab_error_range <- dt$dcast(bias_estimates,
+tab_error_range <- dt$dcast(bias_estimates_mean_no,
                             scenario + x ~ stop,
                             value.var = temp_var_selection)
 
@@ -191,7 +140,7 @@ kx$kbl(tab_error_range,
 
 # 4. Save bias estimates -------------------------------------------------------
 
-save(bias_estimates,
+save(bias_estimates_mean_no,
      file = "./data/sim_bias_estimates/bias_estimates.RData")
 
 #///////////////////////////////////////////////////////////////////////////////
