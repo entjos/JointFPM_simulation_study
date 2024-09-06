@@ -14,18 +14,20 @@ rm(list = ls())
 
 # Load packages
 box::use(dt = data.table,
-         par = parallel,
+         ft = future,
+         future.apply[future_lapply],
          kx = kableExtra,
          usr = scripts/user_functions)
 
 # 1. Set Up Parallelisation ----------------------------------------------------
 
-cl <- par$makeCluster(10, type = "SOCK")
+ft$plan(strategy = "multisession",
+        workers  = 10)
 
 # 2. Define function for calculating bias and coverage -------------------------
 
 # Apply function
-bias_estimates_mean_no <- par$parLapply(cl, 1:10, \(i) {
+bias_estimates_mean_no <- future_lapply(1:10, \(i) {
   box::use(usr = scripts/user_functions)
   usr$compute_bias(i, 
                    estimate = "mean_no",
@@ -34,7 +36,7 @@ bias_estimates_mean_no <- par$parLapply(cl, 1:10, \(i) {
 }) |> 
   dt$rbindlist()
 
-bias_estimates_diff <- par$parLapply(cl, 1:10, \(i) {
+bias_estimates_diff <- future_lapply(1:10, \(i) {
   box::use(usr = scripts/user_functions)
   usr$compute_bias(i, 
                    estimate = "diff",
@@ -43,7 +45,7 @@ bias_estimates_diff <- par$parLapply(cl, 1:10, \(i) {
 }) |> 
   dt$rbindlist()
 
-bias_estimates_cum_haz <- par$parLapply(cl, 1:10, \(i) {
+bias_estimates_cum_haz <- future_lapply(1:10, \(i) {
   box::use(usr = scripts/user_functions)
   usr$compute_bias(i, 
                    estimate = "cum_haz",
@@ -52,7 +54,7 @@ bias_estimates_cum_haz <- par$parLapply(cl, 1:10, \(i) {
 }) |> 
   dt$rbindlist()
 
-bias_estimates_ghosh_lin <- par$parLapply(cl, 1:10, \(i) {
+bias_estimates_ghosh_lin <- future_lapply(1:10, \(i) {
   box::use(usr = scripts/user_functions)
   usr$compute_bias(i, 
                    estimate = "ghosh_lin",

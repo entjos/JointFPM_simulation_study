@@ -29,20 +29,21 @@ ghosh_lin_test <- function(data,
                            size_bootstrapp){
   
   # Load packages
-  box::use(par = parallel)
+  box::use(ft = future,
+           future.apply[future_lapply])
   
   # Obtain list of unique observations
   unique_ids <- unique(data[["id"]])
   
   # Set up clusters
+  ft$plan(strategy = "multisession",
+          workers  = 10)
   
-  cl <- par$makeCluster(n_cluster, type = "SOCK")
+  # Run model tests on cluster
   
-  par$clusterExport(cl, c("data", "unique_ids", "path_sim_iterations",
-                          "size_bootstrapp"),
-                    envir = environment())
-  
-  par$clusterApply(cl, 1:n_bootstrapps, function(i){
+  future_lapply(1:n_bootstrapps, 
+                future.seed = 97235,
+                FUN = function(i){
     
     # Change seed for each iteration
     set.seed(i * 2)

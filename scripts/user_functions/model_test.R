@@ -55,7 +55,7 @@ model_test <- function(data,
   
   future_lapply(1:n_bootstrapps, 
                 future.seed = 97235,
-                function(i){
+                FUN = function(i){
                   
     # Load packages
     box::use(JointFPM[...],
