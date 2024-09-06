@@ -5,4 +5,8 @@ box::use(./benchmarking[...],
          ./stack_simreccomp[...],
          ./plot_model_test[...],
          ./sim[...],
-         ./simreccomp_adapted[...])
+         ./simreccomp_adapted[...],
+         ./compute_bias[...],
+         ./create_sim_table[...],
+         ./calculate_benchmark[...],
+         ./ghosh_lin_test[...])
