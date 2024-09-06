@@ -16,10 +16,26 @@
 #'  A `list` with the shape and scale parameter of the Weibull distribution for
 #'  the competing event process. The argument requires a names list with the
 #'  two elements shape and scale.
+#'  
+#' @param dist.x
+#'  A list of distribution for Xses
+#'  
+#' @param par.x
+#'  A list of distribution parameters for Xses
+#' 
+#' @param beta.xr
+#'  A vector with the effects of X on the recurrent event process
+#' @param beta.xr
+#'  A vector with the effects of X on the competing event process
 #' 
 #' @export
 
-sim <- function(n, par_rec, par_comp) {
+sim <- function(n, par_rec, 
+                par_comp, 
+                dist.x,
+                par.x ,
+                beta.xr,
+                beta.xc) {
   
   # Load modules
   box::use(usr = scripts/user_functions)
@@ -29,10 +45,10 @@ sim <- function(n, par_rec, par_comp) {
                                  fu.min = 0,
                                  fu.max = 10,
                                  cens.prob = 0,
-                                 dist.x = "binomial",
-                                 par.x = 0.5,
-                                 beta.xr = 1.2,
-                                 beta.xc = 0.4,
+                                 dist.x = dist.x,
+                                 par.x = par.x,
+                                 beta.xr = beta.xr,
+                                 beta.xc = beta.xc,
                                  dist.zr = "gamma",
                                  par.zr = 0,
                                  dist.zc = "gamma",
