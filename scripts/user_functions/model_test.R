@@ -14,6 +14,9 @@
 #' @param arg_JointFPM
 #'  A `list` of argument passed to the `JointFPM::JointFPM()` call.
 #'  
+#' @param predict_calls
+#'  A `list` of argument passed to the `JointFPM:::predict.JointFPM()` call. 
+#'  
 #' @param n_cluster
 #'  The number of clusters used for paralleling the bootstrapping and model
 #'  estimation.
@@ -21,9 +24,6 @@
 #' @param size_bootstrapp
 #'  The number of observations sampled from the whole dataset for each
 #'  bootstrapp.
-#'  
-#' @param ci_fit
-#'  Indicating if confidence intervalls should be fitted or not.
 #'  
 #' @return
 #'  None. `model_test` stores the estimates for each iteration in 
@@ -35,11 +35,10 @@ model_test <- function(data,
                        type = c("mean_no", "diff"),
                        path_sim_iterations,
                        arg_JointFPM,
+                       predict_calls,
                        n_cluster,
                        n_bootstrapps,
-                       size_bootstrapp,
-                       times,
-                       ci_fit){
+                       size_bootstrapp){
   
   # Load packages
   box::use(par = parallel)
@@ -52,8 +51,7 @@ model_test <- function(data,
   cl <- par$makeCluster(n_cluster, type = "SOCK")
   
   par$clusterExport(cl, c("data", "unique_ids", "path_sim_iterations",
-                          "size_bootstrapp", "arg_JointFPM", "ci_fit",
-                          "times"),
+                          "size_bootstrapp", "arg_JointFPM", "predict_calls"),
                     envir = environment())
   
   # Run model tests on cluster
@@ -66,7 +64,8 @@ model_test <- function(data,
     # Load packages
     box::use(JointFPM[...],
              data.table[...],
-             purrr[safely])
+             purrr[safely],
+             stats[setNames])
     
     # Sample from whole dataset
     tmp_data <- data[data[[arg_JointFPM$cluster]] %in% sample(unique_ids, 
@@ -104,8 +103,18 @@ model_test <- function(data,
     # Update model call based on best dfs fit
     arg_JointFPM$df_ce <- best_fit$df_ce
     arg_JointFPM$df_re <- best_fit$df_re
-    arg_JointFPM$tvc_ce_terms <- list(x = best_fit$df_ce_x)
-    arg_JointFPM$tvc_re_terms <- list(x = best_fit$df_re_x)
+    
+    # Update best fitting tvc terms
+    nam_tvc_ce_terms <- names(arg_JointFPM$tvc_ce_terms)
+    nam_tvc_re_terms <- names(arg_JointFPM$tvc_re_terms)
+    arg_JointFPM$tvc_ce_terms <- best_fit[, paste0("df_ce_", nam_tvc_ce_terms)]
+    arg_JointFPM$tvc_re_terms <- best_fit[, paste0("df_re_", nam_tvc_re_terms)]
+    arg_JointFPM$tvc_ce_terms <- setNames(as.list(arg_JointFPM$tvc_ce_terms),
+                                          nam_tvc_ce_terms)
+    arg_JointFPM$tvc_re_terms <- setNames(as.list(arg_JointFPM$tvc_re_terms),
+                                          nam_tvc_re_terms)
+    
+    # Remove old variables
     arg_JointFPM$dfs_ce <- NULL
     arg_JointFPM$dfs_re <- NULL
     
@@ -132,91 +141,43 @@ model_test <- function(data,
       
     }
     
-    if(type == "mean_no"){
+    # Prediction call
+    fit <- lapply(seq_along(predict_calls), function(j){
       
-      # Predict mean no. for treated and untreated
-      fit <- lapply(0:1, function(j){
-        
-        predict_call <- safely(
-          function(){
-            JointFPM:::predict.JointFPM(model,
-                                        type        = "mean_no",
-                                        newdata     = data.frame(x = j),
-                                        t           = times,
-                                        ci_fit      = ci_fit)
-          })
-        
-        predict_test <- predict_call()
-        
-        # Return with message on error
-        if(!is.null(predict_test$error)){
-          
-          # Save error message
-          sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
-               append = TRUE)
-          
-          cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
-          print(predict_test$error)
-          
-          sink()
-          
-          return(NULL)
-          
-        } else {
-          
-          tmp <- predict_test$result
-          
-        }
-        
-        tmp$x <- j
-        
-        return(tmp)
-        
-      }) |> data.table::rbindlist()
+      predict_calls[[j]]$object <- model
       
-    } else if (type == "diff"){
+      predict_call <- safely(
+        function(){
+          do.call(JointFPM:::predict.JointFPM, predict_calls[[j]])
+        })
       
-      # Predict mean no. for treated and untreated
-      fit <- lapply(0:1, function(j){
-        
-        predict_call <- safely(
-          function(){
-            JointFPM:::predict.JointFPM(model,
-                                        type        = "diff",
-                                        newdata     = data.frame(x = 0),
-                                        exposed     = \(x) transform(x, x = 1),
-                                        t           = times,
-                                        ci_fit      = ci_fit)
-          })
-        
-        predict_test <- predict_call()
-        
-        # Return with message on error
-        if(!is.null(predict_test$error)){
-          
-          # Save error message
-          sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
-               append = TRUE)
-          
-          cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
-          print(predict_test$error)
-          
-          sink()
-          
-          return(NULL)
-          
-        } else {
-          
-          tmp <- predict_test$result
-          
-        }
-        
-        return(tmp)
-        
-      }) |> data.table::rbindlist()
+      predict_test <- predict_call()
       
-    }
-    
+      # Return with message on error
+      if(!is.null(predict_test$error)){
+        
+        # Save error message
+        sink(paste0(path_sim_iterations, "error_iteration", i, ".txt"),
+             append = TRUE)
+        
+        cat("Error in predict.JointFPM() in subet x = ", j, ":\n")
+        print(predict_test$error)
+        
+        sink()
+        
+        return(NULL)
+        
+      } else {
+        
+        tmp <- predict_test$result
+        
+      }
+      
+      tmp <- cbind(predict_calls[[j]]$newdata, tmp)
+      
+      return(tmp)
+      
+    }) |> data.table::rbindlist()
     
     # Save data as .csv file
     fit$iteration <- i
