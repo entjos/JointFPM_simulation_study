@@ -1,55 +1,84 @@
 ################################################################################
 # Project: Parametric Estimation of The Mean Number of Events
 # 
-# Title: Obtaining Benchmark Estimates for Scenarios 1-10
+# Title: Obtaining Benchmark Estimates for Scenarios 1-11
 # 
 # Author: Joshua Entrop
 #
-# Creates: ./data/sim_benchmark/sim<1-10>.csv
+# Creates: ./data/sim_benchmark/sim<1-11>.csv
 # 
 ################################################################################
 
 # Prefix -----------------------------------------------------------------------
 
 # Load package
-box::use(par = parallel)
+box::use(usr = scripts/user_functions,
+         dt  = data.table,
+         survival[Surv],
+         JointFPM[mean_no])
 
-# 2. Set Up Parallelisation ----------------------------------------------------
+# 1. Get benchmarks for scenario 1:9 -------------------------------------------
 
-cl <- par$makeCluster(10, type = "SOCK")
-
-# 3. Run Simulations -----------------------------------------------------------
-par$clusterApply(cl, 1:10, function(i) {
+for(i in 1:9){
   
-  # Load packages
-  box::use(dt  = data.table,
-           survival[Surv],
-           JointFPM[mean_no])
+  temp <- usr$calculate_benchmark(i, newdata = expand.grid(stop = c(2.5, 5, 10),
+                                                           x    = 0:1))
   
-  # Load data
-  sim_data <- dt$fread(paste0("./data/sim_data/sim", i, ".csv"))
-  
-  # Obtain benchmark estimates
-  temp <- mean_no(formula      = Surv(start, stop, status) ~ x,
-                  re_indicator = "re",
-                  ce_indicator = "ce",
-                  data         = sim_data,
-                  re_control   = list(timefix = FALSE))
-  
-  temp[, x := gsub("x=", "", strata)]
-  temp[, strata := NULL]
-  
-  # Export dataset
   dt$fwrite(temp, paste0("./data/sim_benchmark/sim", i, ".csv"))
   
-  # Success
-  return(1)
-  
-})
+}
 
-# 4. Clean up ------------------------------------------------------------------
+# 2. Get benchmarks for scenario 10 --------------------------------------------
 
-par$stopCluster(cl)
+# Load data whole dataset
+sim_data <- dt$fread(paste0("./data/sim_data/sim10.csv"))
+
+# Obtain benchmark estimates
+temp <- mean_no(formula      = Surv(start, stop, status) ~ x,
+                re_indicator = "re",
+                ce_indicator = "ce",
+                data         = sim_data,
+                re_control   = list(timefix = FALSE))
+
+temp[, x := gsub("x=", "", strata)]
+temp[, strata := NULL]
+
+# Obtain benchmarks for different time points
+temp <- temp[,
+             .SD[c(which.min(abs(time - 2.5)),
+                   which.min(abs(time - 5.0)),
+                   which.min(abs(time - 10)))],
+             by = x,
+             .SDcols = c("time", "expn")]
+
+# Make data align with the other benchmark dataset
+temp[, stop := round(time , 1)]
+dt$setnames(temp, "expn", "target")
+
+temp <- temp[, .(stop, x, target)]
+
+# Export dataset
+dt$fwrite(temp, paste0("./data/sim_benchmark/sim10.csv"))
+
+# 3. Get benchmarks for scenario 11 --------------------------------------------
+temp <- usr$calculate_benchmark(11, 
+                                newdata = expand.grid(stop = c(2.5, 5, 10),
+                                                      x    = list(c(0, 0),
+                                                                  c(1, 0),
+                                                                  c(0, 1),
+                                                                  c(1, 1),
+                                                                  c(0, 2),
+                                                                  c(1, 2),
+                                                                  c(0, 3),
+                                                                  c(1, 3))))
+
+
+temp <- cbind(expand.grid(stop = c(2.5, 5, 10),
+                          x.V1   = 0:1,
+                          x.V2   = 0:3),
+              target = temp$target)
+
+dt$fwrite(temp, paste0("./data/sim_benchmark/sim11.csv"))
 
 ################################################################################
 # END OF R-FILE
