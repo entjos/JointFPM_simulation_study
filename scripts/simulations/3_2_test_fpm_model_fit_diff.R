@@ -37,11 +37,14 @@ lapply(1:10, function(i) {
                                      tvc_re_terms = list(x = 1),
                                      tvc_ce_terms = list(x = 1),
                                      cluster = "id"),
-                 times = c(2.5, 5.0, 10),
+                 predict_calls = list(list(type    = "diff",
+                                           newdata = data.frame(x = 0),
+                                           exposed = \(x) transform(x, x = 1),
+                                           t       = c(2.5, 5, 10),
+                                           ci_fit  = TRUE)),
                  n_cluster = 10,
                  n_bootstrapps = 1900,
-                 size_bootstrapp = 1000,
-                 ci_fit = TRUE)
+                 size_bootstrapp = 1000)
   
   # Success
   return(1)
