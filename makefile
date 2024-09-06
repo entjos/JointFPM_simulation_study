@@ -15,7 +15,7 @@
 # 1. Prefix -------------------------------------------------------------------
 
 # Define R call
-SHELL = ./rtools40/usr/bin/sh.exe
+SHELL = sh.exe
 #This only needs to be specified in case you are on 
 # system where you don't automatically have acess to the shell
 REXE  = "C:\Program Files\R\R-4.3.2\bin\R.exe" # Please replace R.exe with the full path to your R installation
@@ -42,7 +42,9 @@ sim: sim_iterations \
      
 sim_iterations: $(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out\
                 $(SIMULATIONS_OBJ)/3_2_test_fpm_model_fit_diff.out \
-                $(SIMULATIONS_OBJ)/3_3_test_fpm_model_fit_cumhaz.out
+                $(SIMULATIONS_OBJ)/3_3_test_fpm_model_fit_cumhaz.out \
+                $(SIMULATIONS_OBJ)/3_4_test_fpm_model_fit_cont_x.out \
+                $(SIMULATIONS_OBJ)/3_5_test_ghosh_lin.out
 
 $(SIMULATIONS_OBJ)/1_simulate_data.out: $(SIMULATIONS_DIR)/1_simulate_data.R \
                                         $(USER_FUNCTIONS)/sim.R
@@ -55,23 +57,31 @@ $(SIMULATIONS_OBJ)/2_get_benchmark.out: $(SIMULATIONS_DIR)/2_get_benchmark.R \
 
 $(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out: $(SIMULATIONS_DIR)/3_1_test_fpm_model_fit_mean_no.R \
                                              $(SIMULATIONS_OBJ)/1_simulate_data.out \
-                                             $(SIMULATIONS_OBJ)/2_get_benchmark.out \
                                              $(USER_FUNCTIONS)/model_test.R
 	$(RCALL) $< $@
 
 $(SIMULATIONS_OBJ)/3_2_test_fpm_model_fit_diff.out: $(SIMULATIONS_DIR)/3_2_test_fpm_model_fit_diff.R \
                                              $(SIMULATIONS_OBJ)/1_simulate_data.out \
-                                             $(SIMULATIONS_OBJ)/2_get_benchmark.out \
                                              $(USER_FUNCTIONS)/model_test.R
 	$(RCALL) $< $@
 	
 $(SIMULATIONS_OBJ)/3_3_test_fpm_model_fit_cumhaz.out: $(SIMULATIONS_DIR)/3_3_test_fpm_model_fit_cumhaz.R \
                                                       $(SIMULATIONS_OBJ)/1_simulate_data.out \
-                                                      $(SIMULATIONS_OBJ)/2_get_benchmark.out \
+                                                      $(USER_FUNCTIONS)/test_cum_haz_model.R
+	$(RCALL) $< $@
+	
+$(SIMULATIONS_OBJ)/3_4_test_fpm_model_fit_cont_x.out: $(SIMULATIONS_DIR)/3_4_test_fpm_model_fit_cont_x.R \
+                                                      $(SIMULATIONS_OBJ)/1_simulate_data.out \
                                                       $(USER_FUNCTIONS)/model_test.R
+	$(RCALL) $< $@
+	
+$(SIMULATIONS_OBJ)/3_5_test_ghosh_lin.out: $(SIMULATIONS_DIR)/3_5_test_ghosh_lin.R \
+                                           $(SIMULATIONS_OBJ)/1_simulate_data.out \
+                                           $(USER_FUNCTIONS)/ghosh_lin_test.R
 	$(RCALL) $< $@
 
 $(SIMULATIONS_OBJ)/4_get_model_fit_estimates.out: $(SIMULATIONS_DIR)/4_get_model_fit_estimates.R \
+                                                  $(SIMULATIONS_OBJ)/2_get_benchmark.out \
                                                   $(SIMULATIONS_OBJ)/3_1_test_fpm_model_fit_mean_no.out
 	$(RCALL) $< $@
 
