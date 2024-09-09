@@ -1,11 +1,13 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
+R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -15,8 +17,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
-- The project is out-of-sync -- use `renv::status()` for details.
+- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
 [Previously saved workspace restored]
 
 > ################################################################################
@@ -30,8 +31,6 @@ Type 'q()' to quit R.
 > 
 > # Load packages
 > library(JointFPM)
-Warning message:
-package 'JointFPM' was built under R version 4.3.3 
 > library(rstpm2)
 Loading required package: survival
 Loading required package: splines
@@ -51,8 +50,6 @@ The following object is masked from 'package:rlang':
 
     set_names
 
-Warning message:
-package 'magrittr' was built under R version 4.3.3 
 > library(tidyr)
 
 Attaching package: 'tidyr'
@@ -74,8 +71,6 @@ The following objects are masked from 'package:rlang':
     %@%, flatten, flatten_chr, flatten_dbl, flatten_int, flatten_lgl,
     flatten_raw, invoke, splice
 
-Warning message:
-package 'purrr' was built under R version 4.3.3 
 > library(ggplot2)
 > library(dplyr)
 
@@ -196,7 +191,7 @@ The following objects are masked from 'package:base':
 +        y = "Survival probability") +
 +   theme_bw()
 > 
-> ggsave("./plots/example_surv_kme.pdf",
+> ggsave("./plots/figureS1.pdf",
 +        device = "pdf",
 +        height = 14,
 +        width = 14,
@@ -215,7 +210,7 @@ The following objects are masked from 'package:base':
 +        y = "Cumulative hazard") +
 +   theme_bw()
 > 
-> ggsave("./plots/example_cumhaz_na.pdf",
+> ggsave("./plots/figureS2.pdf",
 +        device = "pdf",
 +        height = 14,
 +        width = 14,
@@ -226,4 +221,4 @@ The following objects are masked from 'package:base':
 > 
 > proc.time()
    user  system elapsed 
-  14.50    2.65   20.17 
+   6.29    2.82   23.23 

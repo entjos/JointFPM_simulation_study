@@ -1,11 +1,13 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
+R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -15,8 +17,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
-- The project is out-of-sync -- use `renv::status()` for details.
+- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
 [Previously saved workspace restored]
 
 > ################################################################################
@@ -80,6 +81,7 @@ The following objects are masked from 'package:base':
 +                 linetype = "Conditional"),
 +             data = np_expn) +
 +   scale_colour_brewer(palette = "Set1") +
++   scale_y_continuous(limits = c(0, 2.5)) +
 +   facet_wrap(~ sex) +
 +   labs(x = "",
 +        y = "Mean number\nof hospitalisations",
@@ -88,7 +90,7 @@ The following objects are masked from 'package:base':
 +   theme_bw() +
 +   theme(plot.margin = unit(c(0, 0, 2, 0), "mm"))
 > 
-> # 2. Create plot of difference E[N(t)] across time -----------------------------
+> # 3. Create plot of difference E[N(t)] across time -----------------------------
 > gg_diff <- ggplot(diff_expn,
 +                   aes(x = t.stop,
 +                       y = fit)) +
@@ -100,13 +102,14 @@ The following objects are masked from 'package:base':
 +   geom_hline(yintercept = 0,
 +              lty = "dashed") +
 +   scale_colour_brewer(palette = "Set1") +
++   scale_y_continuous(limits = c(-0.2, 1.6)) +
 +   facet_wrap(~ sex) +
 +   labs(x = "Time since surgery (days)",
 +        y = "Difference in mean number\nof hospitalisations") +
 +   theme_bw() +
 +   theme(plot.margin = unit(c(0, 0, 0, 0), "mm"))
 > 
-> # 3. Combine plots into one plot -----------------------------------------------
+> # 4. Combine plots into one plot -----------------------------------------------
 > gg_comb <- wrap_plots(gg_mean_no,
 +                       gg_diff,
 +                       ncol = 1, 
@@ -115,8 +118,8 @@ The following objects are masked from 'package:base':
 +   theme(legend.position      = "right",
 +         legend.box           = "vertical")
 > 
-> # 4. Export graph as pdf -------------------------------------------------------
-> ggsave("./plots/example_plot_1.pdf",
+> # 5. Export graph as pdf -------------------------------------------------------
+> ggsave("./plots/figure4.pdf",
 +        gg_comb,
 +        device = "pdf",
 +        height = 14,
@@ -131,4 +134,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  13.87    2.60   30.21 
+   5.25    2.53   19.67 

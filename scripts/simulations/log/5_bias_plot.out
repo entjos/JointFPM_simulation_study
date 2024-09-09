@@ -1,11 +1,13 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
+R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -15,8 +17,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
-- The project is out-of-sync -- use `renv::status()` for details.
+- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
 [Previously saved workspace restored]
 
 > ################################################################################
@@ -44,15 +45,15 @@ Type 'q()' to quit R.
 +                                                     palette = "Set1")(3))
 > 
 > # Load data
-> load("./data/sim_bias_estimates/bias_estimates.RData")
+> load("./data/sim_bias_estimates/bias_estimates_mean_no.RData")
 > 
 > # 1. User functions for plotting -----------------------------------------------
 > remove_x <- theme(axis.title.y  = element_blank(),
-+                   axis.text.y  = element_blank(),
-+                   axis.ticks.y = element_blank())
++                   axis.text.y   = element_blank(),
++                   axis.ticks.y  = element_blank())
 > 
 > # 2. Create labels for plotting ------------------------------------------------
-> bias_estimates <- bias_estimates |> 
+> bias_estimates <- bias_estimates_mean_no |> 
 +   mutate(label = paste0("Scenario ", sprintf("%02d", scenario),
 +                         "; x = ", x),
 +          stop = factor(stop))
@@ -126,7 +127,7 @@ Type 'q()' to quit R.
 > 
 > # 5. Export plot ---------------------------------------------------------------
 > 
-> ggsave("./plots/biasplot_1.pdf",
+> ggsave("./plots/figure3.pdf",
 +        gg_comb,
 +        device = "pdf",
 +        height = 14,
@@ -138,4 +139,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-   3.96    1.76    7.93 
+   4.56    2.87   24.10 

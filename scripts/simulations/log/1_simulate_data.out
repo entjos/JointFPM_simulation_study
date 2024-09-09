@@ -15,8 +15,14 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
-- The project is out-of-sync -- use `renv::status()` for details.
+- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
 > ################################################################################
 > # Project: Parametic Estimation of The Mean Number of Events
 > # 
@@ -33,23 +39,46 @@ Type 'q()' to quit R.
 > # Load package
 > box::use(dt  = data.table,
 +          ft  = future,
-+          future.apply[future_lapply])
++          future.apply[future_lapply],
++          usr = scripts/user_functions)
 > 
 > # 1. Define Scenarios ----------------------------------------------------------
 > 
+> # Scenarios 1:9 ================================================================
 > scenarios <- expand.grid(scale_rec     = list(0.1, 0.3, 0.5),
 +                          shape_rec     = list(1.40),
 +                          scale_rec_inc = list(NA),
 +                          scale_comp  = list(0.02, 0.20, 0.60),
-+                          shape_comp  = list(0.50)) |> 
++                          shape_comp  = list(0.50),
++                          dist.x      = list("binomial"),
++                          par.x       = list(0.5),
++                          beta.xr     = list(1.2),
++                          beta.xc     = list(0.4)) |> 
 +   as.list()
 > 
+> # Scenario 10 ==================================================================
 > # Add one scenario with a lambda being a function of previous occurences
-> scenarios$scale_rec[[10]] <- 0.1
-> scenarios$shape_rec[[10]] <- 1.4
+> scenarios$scale_rec[[10]]     <- 0.1
+> scenarios$shape_rec[[10]]     <- 1.4
 > scenarios$scale_rec_inc[[10]] <- function(x){1 + (x/(x + 1))}
-> scenarios$scale_comp[[10]] <- 0.2
-> scenarios$shape_comp[[10]] <- 0.5
+> scenarios$scale_comp[[10]]    <- 0.2
+> scenarios$shape_comp[[10]]    <- 0.5
+> scenarios$dist.x[[10]]        <- "binomial"
+> scenarios$par.x[[10]]         <- 0.5
+> scenarios$beta.xr[[10]]       <- 1.2
+> scenarios$beta.xc[[10]]       <- 0.4
+> 
+> # Scenario 11 ==================================================================
+> # Add one scenario with contentious X 
+> scenarios$scale_rec[[11]]     <- scenarios$scale_rec[[5]]
+> scenarios$shape_rec[[11]]     <- scenarios$shape_rec[[5]]
+> scenarios$scale_rec_inc[[11]] <- scenarios$scale_rec_inc[[5]]
+> scenarios$scale_comp[[11]]    <- scenarios$scale_comp[[5]]
+> scenarios$shape_comp[[11]]    <- scenarios$shape_comp[[5]]
+> scenarios$dist.x[[11]]        <- c("binomial", "normal")
+> scenarios$par.x[[11]]         <- list(0.5, c(0, 1))
+> scenarios$beta.xr[[11]]       <- c(1.2, 1.1)
+> scenarios$beta.xc[[11]]       <- c(0.4, 0.8)
 > 
 > # Save scenarios
 > saveRDS(scenarios, file = "./data/sim_data/scenarios.RData")
@@ -57,45 +86,122 @@ Type 'q()' to quit R.
 > # 2. Set Up Parallelisation ----------------------------------------------------
 > 
 > ft$plan(strategy = "multisession",
-+         workers  = 10)
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
-- The project is out-of-sync -- use `renv::status()` for details.
++         workers  = 11)
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+The following package(s) are missing their DESCRIPTION files:
+- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
+These may be left over from a prior, failed installation attempt.
+Consider removing or reinstalling these packages.
+
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
 > 
 > # 3. Run Simulations -----------------------------------------------------------
-> future_lapply(1:10, 
+> 
+> #   3.1 Simulate binary X ======================================================
+> future_lapply(1:11, 
 +               future.seed = 22345,
 +               function(i) {
-+ 
-+   # Load packages
-+   box::use(usr = scripts/user_functions,
-+            dt  = data.table)
-+ 
-+   # Run Simulation (see function documentation for fixed parameters)
-+   temp <- usr$sim(1000000,
-+                   par_rec  = list(scale     = scenarios$scale_rec[[i]], 
++                 
++                 # Load packages
++                 box::use(usr = scripts/user_functions,
++                          dt  = data.table)
++                 
++                 # Run Simulation (see function documentation for parameters)
++                 temp <- usr$sim(1e+06,
++                                 par_rec  = list(
++                                   scale     = scenarios$scale_rec[[i]], 
 +                                   shape     = scenarios$shape_rec[[i]],
-+                                   scale_inc = scenarios$scale_rec_inc[[i]]),
-+                   par_comp = list(scale     = scenarios$scale_comp[[i]], 
-+                                   shape     = scenarios$shape_comp[[i]]))
-+ 
-+   # Add indicator for scenario number
-+   temp$scenario <- i
-+   
-+   # Export dataset
-+   dt$fwrite(temp, paste0("./data/sim_data/sim", i, ".csv"))
-+ 
-+   # Success
-+   return(1)
-+ 
-+ })
++                                   scale_inc = scenarios$scale_rec_inc[[i]]
++                                 ),
++                                 par_comp = list(
++                                   scale     = scenarios$scale_comp[[i]], 
++                                   shape     = scenarios$shape_comp[[i]]
++                                 ),
++                                 dist.x  = scenarios$dist.x[[i]],
++                                 par.x   = scenarios$par.x[[i]],
++                                 beta.xr = scenarios$beta.xr[[i]],
++                                 beta.xc = scenarios$beta.xc[[i]])
++                 
++                 # Add indicator for scenario number
++                 temp$scenario <- i
++                 
++                 # Export dataset
++                 dt$fwrite(temp, paste0("./data/sim_data/sim", i, ".csv"))
++                 
++                 # Success
++                 return(1)
++                 
++               })
 [[1]]
 [1] 1
 
@@ -126,10 +232,13 @@ Type 'q()' to quit R.
 [[10]]
 [1] 1
 
+[[11]]
+[1] 1
+
 > 
 > ################################################################################
 > # END OF R-FILE
 > 
 > proc.time()
     user   system  elapsed 
-    7.98     1.93 46028.39 
+    2.70     0.48 72370.50 
