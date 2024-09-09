@@ -14,12 +14,13 @@
 
 # 1. Prefix -------------------------------------------------------------------
 
-# Define R call
-SHELL = sh.exe
 #This only needs to be specified in case you are on 
 # system where you don't automatically have acess to the shell
+SHELL = sh.exe
+
+# Define R call
 REXE  = R.exe # Please replace R.exe with the full path to your R installation
-              # if you don't have R on your system path
+              # if you don't have R on your system path, e.g.,
               # "C:\Program Files\R\R-4.3.2\bin\R.exe"
 
 
