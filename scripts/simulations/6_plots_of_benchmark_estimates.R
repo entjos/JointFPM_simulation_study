@@ -23,33 +23,28 @@ estimates <- lapply(1:10, function(x) {
   dt$fread(paste0("./data/sim_benchmark/sim", x, ".csv"))
 })
 
-# 1. Preapre data for plotting -------------------------------------------------
+# 1. Prepare data for plotting -------------------------------------------------
 
 # Get parameters for scenarios
 scenarios <- readRDS("./data/sim_data/scenarios.RData")
 
 # Improve labeling of facets
-test <- lapply(1:10, function(i){
+estimates <- lapply(1:10, function(i){
   
-  dta <- dt$copy(estimates)
-  
-  dta[[i]][, scenario := paste0("Scenario~", sprintf("%02d", i),
+  estimates[[i]][, scenario := paste0("Scenario~", sprintf("%02d", i),
                                 "~rho~`=`~",
                                 scenarios$scale_rec[[i]],
                                 if(i == 10) "%up%",
                                 "~iota~`=`~",
                                 scenarios$scale_comp[[i]]),]
-  dta[[i]][, x := factor(x)]
-  dta[[i]][sample(.N, 10000)] # Take sampel of 10000 time points
+  estimates[[i]][, x := factor(x)]
   
-})
-
-test <- test |> dt$rbindlist()
+}) |> dt$rbindlist()
 
 # 2. Create plot ---------------------------------------------------------------
-benchmark_plot <- ggplot(test,
-                         aes(x = time,
-                             y = expn,
+benchmark_plot <- ggplot(estimates,
+                         aes(x = stop,
+                             y = target,
                              colour = x,
                              lty    = x,
                              group  = x)) +
