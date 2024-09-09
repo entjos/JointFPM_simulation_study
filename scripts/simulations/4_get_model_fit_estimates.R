@@ -68,9 +68,6 @@ bias_estimates_cont_x <- usr$compute_bias(11,
                                           target   = "mean_no", 
                                           by_vars  = c("stop", "x.V1", "x.V2"))
 
-# Close clusters
-par$stopCluster(cl)
-
 # 3. Export table to Latex -----------------------------------------------------
 
 usr$create_sim_table(bias_estimates_mean_no,
@@ -143,7 +140,7 @@ kx$kbl(tab_error_range,
 # 4. Save bias estimates -------------------------------------------------------
 
 save(bias_estimates_mean_no,
-     file = "./data/sim_bias_estimates/bias_estimates.RData")
+     file = "./data/sim_bias_estimates/bias_estimates_mean_no.RData")
 
 #///////////////////////////////////////////////////////////////////////////////
 # END OF R-FILE
