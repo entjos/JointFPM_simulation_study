@@ -21,8 +21,9 @@ box::use(usr = scripts/user_functions,
 
 for(i in 1:9){
   
-  temp <- usr$calculate_benchmark(i, newdata = expand.grid(stop = c(2.5, 5, 10),
-                                                           x    = 0:1))
+  temp <- usr$calculate_benchmark(i, 
+                                  newdata = expand.grid(stop = seq(0.1, 10, 0.1),
+                                                        x    = 0:1))
   
   dt$fwrite(temp, paste0("./data/sim_benchmark/sim", i, ".csv"))
   
@@ -43,17 +44,9 @@ temp <- mean_no(formula      = Surv(start, stop, status) ~ x,
 temp[, x := gsub("x=", "", strata)]
 temp[, strata := NULL]
 
-# Obtain benchmarks for different time points
-temp <- temp[,
-             .SD[c(which.min(abs(time - 2.5)),
-                   which.min(abs(time - 5.0)),
-                   which.min(abs(time - 10)))],
-             by = x,
-             .SDcols = c("time", "expn")]
-
-# Make data align with the other benchmark dataset
-temp[, stop := round(time , 1)]
-dt$setnames(temp, "expn", "target")
+# Update column names
+dt$setnames(temp, old = "expn", new = "target")
+dt$setnames(temp, old = "time", new = "stop")
 
 temp <- temp[, .(stop, x, target)]
 

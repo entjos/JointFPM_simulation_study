@@ -14,7 +14,7 @@ compute_bias <- function(sim_no,
                          by_vars){
   
   box::use(dt = data.table[...])
-
+  
   # Load estimates
   sim_results <- lapply(dir(paste0("./data/sim_iterations/", 
                                    estimate, "/sim", sim_no), 
@@ -36,6 +36,18 @@ compute_bias <- function(sim_no,
   
   # Load benchmark estimates
   benchmark <- fread(paste0("./data/sim_benchmark/sim", sim_no, ".csv"))
+  
+  # Find the estimates for 2.5, 5, and 10 years (Note 1)
+  benchmark[, lead_times := shift(stop, type = "lead"), by = x]
+  
+  benchmark <- benchmark[, .SD[c(match(TRUE, lead_times > 2.5),
+                                 match(TRUE, lead_times > 5),
+                                 which.max(stop))],
+                         by = x,
+                         .SDcols = c("stop", "target")]
+  
+  # Make data align with the other benchmark dataset
+  benchmark[, stop := round(stop , 1)]
   
   if(target == "diff"){
     
@@ -73,3 +85,16 @@ compute_bias <- function(sim_no,
   
   return(comb)
 }
+
+# //////////////////////////////////////////////////////////////////////////////
+# NOTES:
+# 
+# 1) This step is for finding the E[N(t)] estimates that are closest below the
+#    the times 2.5, 5, and 10. This is needed as the estimate of, e.g,
+#    E[N(t = 5)] based on the Ghosh and Lin estimator is the estimate that is 
+#    closes below t = 5, if no event is observed at exact t = 5, which will
+#    nearly always be the case. This approach also works for the analytically
+#    approach as this step selects the estimate E[N(t = 5)], if an estimate 
+#    for exactly t = 5 is available.
+#
+# //////////////////////////////////////////////////////////////////////////////
