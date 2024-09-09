@@ -18,8 +18,9 @@
 SHELL = sh.exe
 #This only needs to be specified in case you are on 
 # system where you don't automatically have acess to the shell
-REXE  = "C:\Program Files\R\R-4.3.2\bin\R.exe" # Please replace R.exe with the full path to your R installation
+REXE  = R.exe # Please replace R.exe with the full path to your R installation
               # if you don't have R on your system path
+              # "C:\Program Files\R\R-4.3.2\bin\R.exe"
 
 
 RCALL = $(REXE) --no-save CMD BATCH
@@ -100,17 +101,22 @@ EXAMPLE_DIR = ./scripts/example
 EXAMPLE_OBJ = ./scripts/example/log
 
 example: $(EXAMPLE_OBJ)/1_analysis.out \
-         $(EXAMPLE_OBJ)/2_graphs.out \
-         $(EXAMPLE_OBJ)/3_appendix_graphs.out \
+         $(EXAMPLE_OBJ)/2_main_figures.out \
+         $(EXAMPLE_OBJ)/3_1_appendix_figures_S1_S2.out \
+         $(EXAMPLE_OBJ)/3_2_appendix_figure_S3.out
 
 $(EXAMPLE_OBJ)/1_analysis.out: $(EXAMPLE_DIR)/1_analysis.R 
 	$(RCALL) $< $@
 
-$(EXAMPLE_OBJ)/2_graphs.out: $(EXAMPLE_DIR)/2_graphs.R \
+$(EXAMPLE_OBJ)/2_main_figures.out: $(EXAMPLE_DIR)/2_main_figures.R \
 	$(EXAMPLE_OBJ)/1_analysis.out 
 	$(RCALL) $< $@
 
-$(EXAMPLE_OBJ)/3_appendix_graphs.out: $(EXAMPLE_DIR)/3_appendix_graphs.R \
+$(EXAMPLE_OBJ)/3_1_appendix_figures_S1_S2.out: $(EXAMPLE_DIR)/3_1_appendix_figures_S1_S2.R \
+	$(EXAMPLE_OBJ)/1_analysis.out 
+	$(RCALL) $< $@
+	
+$(EXAMPLE_OBJ)/3_2_appendix_figure_S3.out: $(EXAMPLE_DIR)/3_2_appendix_figure_S3.R \
 	$(EXAMPLE_OBJ)/1_analysis.out 
 	$(RCALL) $< $@
 
