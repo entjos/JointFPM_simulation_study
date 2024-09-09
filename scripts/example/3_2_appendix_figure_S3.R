@@ -95,7 +95,7 @@ diff_cumhaz$type <- "cumhaz"
 diff_expn$type    <- "mean_no"
 
 # Combine H(t) and E[N(t)] datasets
-comb <- rbind(cum_haz, setNames(expn, names(cum_haz)))
+comb <- rbind(cumhaz, setNames(expn, names(cumhaz)))
 
 diff_comb <- rbind(diff_cumhaz[, c("female", "t.stop", "fit", "type")],
                    diff_expn[, c("female", "t.stop", "fit", "type")])
