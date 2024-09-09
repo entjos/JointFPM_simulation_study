@@ -23,15 +23,15 @@ options(ggplot2.discrete.colour = scales$brewer_pal(type = "seq",
                                                     palette = "Set1")(3))
 
 # Load data
-load("./data/sim_bias_estimates/bias_estimates.RData")
+load("./data/sim_bias_estimates/bias_estimates_mean_no.RData")
 
 # 1. User functions for plotting -----------------------------------------------
 remove_x <- theme(axis.title.y  = element_blank(),
-                  axis.text.y  = element_blank(),
-                  axis.ticks.y = element_blank())
+                  axis.text.y   = element_blank(),
+                  axis.ticks.y  = element_blank())
 
 # 2. Create labels for plotting ------------------------------------------------
-bias_estimates <- bias_estimates |> 
+bias_estimates <- bias_estimates_mean_no |> 
   mutate(label = paste0("Scenario ", sprintf("%02d", scenario),
                         "; x = ", x),
          stop = factor(stop))
