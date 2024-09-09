@@ -13,7 +13,7 @@ compute_bias <- function(sim_no,
                          target,
                          by_vars){
   
-  box::use(dt = data.table[...])
+  box::use(dt = data.table)
   
   # Load estimates
   sim_results <- lapply(dir(paste0("./data/sim_iterations/", 
@@ -21,12 +21,12 @@ compute_bias <- function(sim_no,
                             full.names = TRUE,
                             pattern = ".csv$"), 
                         \(x) {
-                          fread(x,
-                                colClasses = c(fit = "double",
-                                               lci = "double",
-                                               uci = "double"))
+                          dt$fread(x,
+                                   colClasses = c(fit = "double",
+                                                  lci = "double",
+                                                  uci = "double"))
                         }) |> 
-    rbindlist()
+    dt$rbindlist()
   
   # Make sure that fit is numeric
   sim_results[, fit := as.numeric(fit)]
@@ -35,15 +35,17 @@ compute_bias <- function(sim_no,
   n_sim <- length(unique(sim_results$iteration))
   
   # Load benchmark estimates
-  benchmark <- fread(paste0("./data/sim_benchmark/sim", sim_no, ".csv"))
+  benchmark <- dt$fread(paste0("./data/sim_benchmark/sim", sim_no, ".csv"))
+  x_vars <- colnames(benchmark)[!colnames(benchmark) %in% c("stop", "target")]
   
   # Find the estimates for 2.5, 5, and 10 years (Note 1)
-  benchmark[, lead_times := shift(stop, type = "lead"), by = x]
+  benchmark[, lead_times := dt$shift(stop, type = "lead"), 
+            by = x_vars]
   
   benchmark <- benchmark[, .SD[c(match(TRUE, lead_times > 2.5),
                                  match(TRUE, lead_times > 5),
                                  which.max(stop))],
-                         by = x,
+                         by = x_vars,
                          .SDcols = c("stop", "target")]
   
   # Make data align with the other benchmark dataset
@@ -51,7 +53,7 @@ compute_bias <- function(sim_no,
   
   if(target == "diff"){
     
-    benchmark <- dcast(benchmark, stop ~ x, value.var = "target")
+    benchmark <- dt$dcast(benchmark, stop ~ x, value.var = "target")
     
     benchmark[, target := `0` - `1`]
     
