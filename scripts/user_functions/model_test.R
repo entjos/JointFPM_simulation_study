@@ -185,8 +185,6 @@ model_test <- function(data,
     data.table::fwrite(fit,
                        paste0(path_sim_iterations, "iteration", i, ".csv"))
     
-    cat("saved iteration", i)
-
   })
   
 }

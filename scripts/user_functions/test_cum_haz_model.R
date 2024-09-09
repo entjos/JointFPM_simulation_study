@@ -185,7 +185,6 @@ test_cum_haz_model <- function(data,
       fwrite(fit,
              paste0(path_sim_iterations, "iteration", i, ".csv"))
       
-      cat("saved iteration", i)
     }
     
   })
