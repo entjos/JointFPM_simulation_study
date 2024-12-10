@@ -15,7 +15,7 @@ options(future.globals.maxSize = 1000 * 1024 ^ 2)
 
 # This options are used in the simulation scripts. Please update these in case
 # you would like to run a smaller number of simulations on fewer clusters.
-options(n_cluster      = 10)
+options(n_cluster      = 11)
 options(n_bootstraps   = 1900)
 options(size_bootstrap = 1000)
 options(n_obs_sim_data = 1e+06)

@@ -61,7 +61,7 @@ saveRDS(scenarios, file = "./data/sim_data/scenarios.RData")
 # 2. Set Up Parallelisation ----------------------------------------------------
 
 ft$plan(strategy = "multisession",
-        workers  = 11)
+        workers  = getOption("n_cluster"))
 
 # 3. Run Simulations -----------------------------------------------------------
 
