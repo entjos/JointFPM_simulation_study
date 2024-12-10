@@ -43,7 +43,7 @@ lapply(1:10, function(i) {
                                            t       = c(2.5, 5, 10),
                                            ci_fit  = TRUE)),
                  # These parameters are defined in the .Rprofile file
-                 n_cluster       = getOption("n_cluister"),
+                 n_cluster       = getOption("n_cluster"),
                  n_bootstrapps   = getOption("n_bootstraps"),
                  size_bootstrapp = getOption("size_bootstrap"))
   

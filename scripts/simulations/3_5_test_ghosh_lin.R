@@ -25,9 +25,10 @@ lapply(1:10, function(i) {
   usr$ghosh_lin_test(sim_data,
                      path_sim_iterations = paste0("./data/sim_iterations",
                                                   "/ghosh_lin/sim", i, "/"),
-                     n_cluster = 10,
-                     n_bootstrapps = 1900,
-                     size_bootstrapp = 1000)
+                     # These parameters are defined in the .Rprofile file
+                     n_cluster       = getOption("n_cluster"),
+                     n_bootstrapps   = getOption("n_bootstraps"),
+                     size_bootstrapp = getOption("size_bootstrap"))
   
   # Success
   return(1)

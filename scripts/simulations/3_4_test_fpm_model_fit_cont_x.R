@@ -50,7 +50,7 @@ usr$model_test(sim_data,
                                    cluster = "id"),
                predict_calls = predict_calls,
                # These parameters are defined in the .Rprofile file
-               n_cluster       = getOption("n_cluister"),
+               n_cluster       = getOption("n_cluster"),
                n_bootstrapps   = getOption("n_bootstraps"),
                size_bootstrapp = getOption("size_bootstrap"))
 
