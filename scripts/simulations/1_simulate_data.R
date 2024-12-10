@@ -75,7 +75,7 @@ future_lapply(1:11,
                          dt  = data.table)
                 
                 # Run Simulation (see function documentation for parameters)
-                temp <- usr$sim(1e+06,
+                temp <- usr$sim(getOption("n_obs_sim_data"),
                                 par_rec  = list(
                                   scale     = scenarios$scale_rec[[i]], 
                                   shape     = scenarios$shape_rec[[i]],
