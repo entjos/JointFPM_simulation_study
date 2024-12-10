@@ -51,22 +51,23 @@ create_sim_table <- function(bias_estimates,
   #   3.2 Highlight significant bias and low coverage with bold ================
   if(highlight){
     
-    table_out$bias[table_out$bias_sig] <- 
-      kx$cell_spec(table_out$bias[table_out$bias_sig],
-                   format = "latex",
-                   bold = TRUE)
+    table_out[bias_sig == TRUE, 
+              bias := kx$cell_spec(.SD$bias,
+                                   format = "latex",
+                                   bold = TRUE)]
     
-    table_out$rel_bias[table_out$rel_bias_sig] <- 
-      kx$cell_spec(table_out$rel_bias[table_out$rel_bias_sig],
-                   format = "latex",
-                   bold = TRUE)
+    table_out[rel_bias_sig == TRUE, 
+              rel_bias := kx$cell_spec(.SD$rel_bias,
+                                       format = "latex",
+                                       bold = TRUE)]
     
-    table_out$coverage[table_out$cov_sig] <- 
-      kx$cell_spec(table_out$coverage[table_out$cov_sig],
-                   format = "latex",
-                   bold = TRUE)
+    table_out[cov_sig  == TRUE, 
+              coverage := kx$cell_spec(.SD$coverage,
+                                       format = "latex",
+                                       bold = TRUE)]
     
   }
+  
   #   3.3 Prepare column order =================================================
   table_out <- dt$dcast(table_out,
                         stats$as.formula(paste(paste(by_vars, collapse = "+"), 
