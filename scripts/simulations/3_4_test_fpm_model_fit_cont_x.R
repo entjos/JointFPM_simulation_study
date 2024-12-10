@@ -49,9 +49,10 @@ usr$model_test(sim_data,
                                    tvc_ce_terms = list(x.V1 = 1, x.V2 = 1),
                                    cluster = "id"),
                predict_calls = predict_calls,
-               n_cluster = 10,
-               n_bootstrapps = 1900,
-               size_bootstrapp = 1000)
+               # These parameters are defined in the .Rprofile file
+               n_cluster       = getOption("n_cluister"),
+               n_bootstrapps   = getOption("n_bootstraps"),
+               size_bootstrapp = getOption("size_bootstrap"))
 
 ################################################################################
 # END OF R-FILE

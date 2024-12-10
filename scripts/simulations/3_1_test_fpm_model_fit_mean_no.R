@@ -45,9 +45,10 @@ lapply(1:10, function(i) {
                                            newdata = data.frame(x = 1),
                                            t       = c(2.5, 5, 10),
                                            ci_fit  = TRUE)),
-                 n_cluster = 10,
-                 n_bootstrapps = 1900,
-                 size_bootstrapp = 1000)
+                 # These parameters are defined in the .Rprofile file
+                 n_cluster       = getOption("n_cluister"),
+                 n_bootstrapps   = getOption("n_bootstraps"),
+                 size_bootstrapp = getOption("size_bootstrap"))
   
   # Success
   return(1)

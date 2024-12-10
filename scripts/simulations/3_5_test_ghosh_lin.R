@@ -23,11 +23,11 @@ lapply(1:10, function(i) {
   
   # Obtain benchmark estimates
   usr$ghosh_lin_test(sim_data,
-                 path_sim_iterations = paste0("./data/sim_iterations",
-                                              "/ghosh_lin/sim", i, "/"),
-                 n_cluster = 10,
-                 n_bootstrapps = 1900,
-                 size_bootstrapp = 1000)
+                     path_sim_iterations = paste0("./data/sim_iterations",
+                                                  "/ghosh_lin/sim", i, "/"),
+                     n_cluster = 10,
+                     n_bootstrapps = 1900,
+                     size_bootstrapp = 1000)
   
   # Success
   return(1)
