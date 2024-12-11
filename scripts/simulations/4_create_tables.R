@@ -9,9 +9,6 @@
 
 # Prefix -----------------------------------------------------------------------
 
-# clear memory
-rm(list = ls())
-
 # Load packages
 box::use(dt = data.table,
          ft = future,

@@ -9,9 +9,6 @@
 
 # Prefix -----------------------------------------------------------------------
 
-# clear memory
-rm(list = ls())
-
 # Load packages
 box::use(ggplot2[...],
          scales,
