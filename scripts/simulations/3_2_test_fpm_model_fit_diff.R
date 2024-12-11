@@ -1,5 +1,5 @@
 ################################################################################
-# Project: Parametic Estimation of The Mean Number of Events
+# Project: Parametric Estimation of The Mean Number of Events
 # 
 # Title: Estimate E[N(t|x=0)] - E[N(t|x=1)] in all scenarios
 # 

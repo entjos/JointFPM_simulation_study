@@ -1,7 +1,7 @@
 ################################################################################
-# Project: Parametic Estimation of The Mean Number of Events
+# Project: Parametric Estimation of The Mean Number of Events
 # 
-# Title: Estimate E[N(t)] in scenario 11, with continious C
+# Title: Estimate E[N(t)] in scenario 11, with continuous C
 # 
 # Author: Joshua Entrop
 #
