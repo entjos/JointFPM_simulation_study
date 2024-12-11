@@ -1,5 +1,5 @@
 ################################################################################
-# Project: Parametic Estimation of The Mean Number of Events
+# Project: Parametric Estimation of The Mean Number of Events
 # 
 # Title: Master Script
 # 
@@ -23,7 +23,7 @@
 #   1.1 Create Simulation Data ================================================= 
 source("scripts/simulations/1_simulate_data.R")
 
-#   1.2 Get Benchmark Estiamtes ================================================
+#   1.2 Get Benchmark Estimates ================================================
 source("scripts/simulations/2_get_benchmark.R")
 
 #   1.3 Main Analysis ==========================================================
