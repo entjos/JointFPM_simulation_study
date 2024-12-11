@@ -49,7 +49,7 @@ model_test <- function(data,
   
   # Set up clusters
   ft$plan(strategy = "multisession",
-          workers  = 10)
+          workers  = n_cluster)
   
   # Run model tests on cluster
   

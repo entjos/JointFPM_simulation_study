@@ -19,7 +19,7 @@ box::use(dt = data.table,
 # 1. Set Up Parallelisation ----------------------------------------------------
 
 ft$plan(strategy = "multisession",
-        workers  = 10)
+        workers  = getOption("n_cluster"))
 
 # 2. Calculate bias and coverage -----------------------------------------------
 
