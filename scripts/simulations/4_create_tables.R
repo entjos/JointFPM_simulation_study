@@ -1,5 +1,5 @@
 ################################################################################
-# Project: Parametic Estimation of The Mean Number of Events
+# Project: Parametric Estimation of The Mean Number of Events
 # 
 # Title: Calculating bias and coverage
 # 
@@ -24,7 +24,7 @@ box::use(dt = data.table,
 ft$plan(strategy = "multisession",
         workers  = 10)
 
-# 2. Define function for calculating bias and coverage -------------------------
+# 2. Calculate bias and coverage -----------------------------------------------
 
 # Apply function
 bias_estimates_mean_no <- future_lapply(1:10, \(i) {
