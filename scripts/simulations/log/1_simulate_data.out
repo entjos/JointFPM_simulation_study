@@ -1,6 +1,6 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
+R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -15,16 +15,9 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
 > ################################################################################
-> # Project: Parametic Estimation of The Mean Number of Events
+> # Project: Parametric Estimation of The Mean Number of Events
 > # 
 > # Title: Simulate Data for Scenario 1
 > # 
@@ -86,84 +79,7 @@ Consider removing or reinstalling these packages.
 > # 2. Set Up Parallelisation ----------------------------------------------------
 > 
 > ft$plan(strategy = "multisession",
-+         workers  = 11)
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
-The following package(s) are missing their DESCRIPTION files:
-- mets [K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files/renv/library/R-4.3/x86_64-w64-mingw32/mets]
-These may be left over from a prior, failed installation attempt.
-Consider removing or reinstalling these packages.
-
-- One or more packages recorded in the lockfile are not installed.
-- Use `renv::status()` for more details.
++         workers  = getOption("n_cluster"))
 > 
 > # 3. Run Simulations -----------------------------------------------------------
 > 
@@ -177,7 +93,7 @@ Consider removing or reinstalling these packages.
 +                          dt  = data.table)
 +                 
 +                 # Run Simulation (see function documentation for parameters)
-+                 temp <- usr$sim(1e+06,
++                 temp <- usr$sim(getOption("n_obs_sim_data"),
 +                                 par_rec  = list(
 +                                   scale     = scenarios$scale_rec[[i]], 
 +                                   shape     = scenarios$shape_rec[[i]],
@@ -241,4 +157,4 @@ Consider removing or reinstalling these packages.
 > 
 > proc.time()
     user   system  elapsed 
-    2.70     0.48 72370.50 
+   11.39     3.26 77072.26 

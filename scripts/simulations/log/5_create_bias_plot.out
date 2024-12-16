@@ -7,8 +7,6 @@ R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
 
-  Natural language support but running in an English locale
-
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
@@ -17,11 +15,11 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
 [Previously saved workspace restored]
 
 > ################################################################################
-> # Project: Parametic Estimation of The Mean Number of Events
+> # Project: Parametric Estimation of The Mean Number of Events
 > # 
 > # Title: Plotting estimates of bias and coverage
 > # 
@@ -30,9 +28,6 @@ Type 'q()' to quit R.
 > ################################################################################
 > 
 > # Prefix -----------------------------------------------------------------------
-> 
-> # clear memory
-> rm(list = ls())
 > 
 > # Load packages
 > box::use(ggplot2[...],
@@ -139,4 +134,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-   4.56    2.87   24.10 
+   7.98    2.31   17.15 

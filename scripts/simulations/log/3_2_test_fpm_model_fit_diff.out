@@ -1,6 +1,6 @@
 
-R version 4.3.2 (2023-10-31 ucrt) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
+R version 4.3.3 (2024-02-29 ucrt) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -15,11 +15,11 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-- Project 'K:/Lymphomabase/phd_studies_joshua/Study3/programme_and_log_files' loaded. [renv 1.0.7]
+- Project 'H:/temp/JointFPM_simulation_study' loaded. [renv 1.0.7]
 [Previously saved workspace restored]
 
 > ################################################################################
-> # Project: Parametic Estimation of The Mean Number of Events
+> # Project: Parametric Estimation of The Mean Number of Events
 > # 
 > # Title: Estimate E[N(t|x=0)] - E[N(t|x=1)] in all scenarios
 > # 
@@ -62,9 +62,10 @@ Type 'q()' to quit R.
 +                                            exposed = \(x) transform(x, x = 1),
 +                                            t       = c(2.5, 5, 10),
 +                                            ci_fit  = TRUE)),
-+                  n_cluster = 10,
-+                  n_bootstrapps = 1900,
-+                  size_bootstrapp = 1000)
++                  # These parameters are defined in the .Rprofile file
++                  n_cluster       = getOption("n_cluster"),
++                  n_bootstrapps   = getOption("n_bootstraps"),
++                  size_bootstrapp = getOption("size_bootstrap"))
 +   
 +   # Success
 +   return(1)
@@ -107,4 +108,4 @@ There were 50 or more warnings (use warnings() to see the first 50)
 > 
 > proc.time()
     user   system  elapsed 
-   43.07   152.65 75149.61 
+   44.29   164.62 66956.32 
