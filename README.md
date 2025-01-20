@@ -45,6 +45,16 @@ options(n_obs_sim_data = 1e+04) # No. of observations included in the simulated 
                                 # which are used for the bootstrapping.
 ```
 
+## Intermediate results
+
+All intermediate results from the simulation study saved in the `/data` folder can be downloaded from the Open Science Framework (https://osf.io/k24gc). This folder includes all files that have been saved during the simulation as described in the folder structure below. 
+
+Please follow these steps to reproduce all results from the simulation study without re-running the simulation:
+
+1. Download the `/data` folder using the OSF link above.
+2. Replace the existing `/data` folder in your project directory with the downloaded folder.
+3. Open the `master.R` file and run the scripts described in Section 1.5 in the file.
+
 ## Data provenance
 
 The example dataset `data/example/readmission.rds` used in the illustrative example was first published in the [`frailtypack`](https://cran.r-project.org/package=frailtypack) package for R under a GPL-2 license.
@@ -65,12 +75,12 @@ The example dataset `data/example/readmission.rds` used in the illustrative exam
 |    +--- sim_data                               Includes simulated datasets for each scenario
 |    |                                           Obtained by running 
 |    |                                              ./scripts/simulations/1_simulate_data
-|    +--- sim_iterations                         Includes datasets including the predicted estimate of interest 
+|    +--- sim_iterations                         Includes datasets including the predicted estimate of interest for
 |    |    |                                      each simulation iteration (1 to 1900)
 |    |    +--- cum_haz                           Including prediction of the cumulative intensity function
 |    |    +--- diff                              Including prediction of the difference in E[N(t)]
 |    |    +--- ghosh_lin                         Including estimate of E[N(t)] using Ghosh and Lin's estimate
-|    |    +--- mean_no                           Including estimate of E[N(t)] using the proposed parametric modelA                                                
+|    |    +--- mean_no                           Including estimate of E[N(t)] using the proposed parametric model                                               
 +--- plots/                                      Includes plots used in the manuscript 
 +--- scripts/
 |    +--- example/
