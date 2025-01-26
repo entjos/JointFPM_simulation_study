@@ -4,11 +4,18 @@
 - Email: joshua.entrop@ki.se
 
 ## Reproducing the analysis
-
 System requirements:
 
 - R version 4.3.3
 - GNU make (optional)
+
+Please download version 2.1 of the GitHub repository either using the following link: https://github.com/entjos/JointFPM_simulation_study/releases/tag/v2.1 or by running the following code in your command line:
+
+```
+git clone --branch v2.1 https://github.com/entjos/JointFPM_simulation_study
+```
+
+Version 2.1 of the repository passed the code review by the Biometrical Journal.
 
 This project includes a `makefile` and a `master.R` file, which both can be used to re-run the whole simulation study as well as the example analysis. The simulation is parallelised and will run on 10 cores once started, if not otherwise defined in the `.Rprofile` file. On my machine the whole program took around 5 days to finish. All datasets created in the simulation study are available as a `.zip` folder at [OSF](https://osf.io/k24gc).
 
